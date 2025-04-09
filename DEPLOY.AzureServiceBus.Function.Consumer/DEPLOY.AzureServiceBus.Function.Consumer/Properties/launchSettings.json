@@ -1,0 +1,15 @@
+{
+  "profiles": {
+    "DEPLOY.AzureServiceBus.Function.Consumer": {
+      "commandName": "Project",
+      "commandLineArgs": "--port 7190"
+    },
+    "Container (Dockerfile)": {
+      "commandName": "Docker",
+      "launchUrl": "{Scheme}://{ServiceHost}:{ServicePort}",
+      "containerRunArguments": "--init",
+      "httpPort": 33840,
+      "useSSL": false
+    }
+  }
+}
