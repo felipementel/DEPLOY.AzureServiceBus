@@ -7,10 +7,9 @@ namespace DEPLOY.AzureServiceBus.API.Extensions
         public static void AddOptionConfig(this IServiceCollection services)
         {
             services
-                .AddOptions<ParametersConfig>()
+                .AddOptionsWithValidateOnStart<ParametersConfig>()
                 .BindConfiguration("ParametersConfig")
                 .ValidateDataAnnotations()
-                .ValidateOnStart()
                 .Validate(config =>
                 {
                     if (config is null || config.AzureServiceBus is null || config.AzureServiceBus.ConnectionString is null)

@@ -23,3 +23,5 @@ app.MapQueueEndpointsV1();
 app.MapTopicsEndpointsV1();
 
 await app.RunAsync();
+
+public partial class Program { }

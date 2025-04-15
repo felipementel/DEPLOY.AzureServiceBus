@@ -1,3 +1,4 @@
 <Solution>
+  <Project Path="DEPLOY.AzureServiceBus.API.Test/DEPLOY.AzureServiceBus.API.Test.csproj" Id="65f331f4-ded2-47b6-91ca-955fb0782b41" />
   <Project Path="DEPLOY.AzureServiceBus.API/DEPLOY.AzureServiceBus.API.csproj" />
 </Solution>

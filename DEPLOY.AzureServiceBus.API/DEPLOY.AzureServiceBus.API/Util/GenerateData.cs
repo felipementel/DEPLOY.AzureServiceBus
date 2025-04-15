@@ -1,4 +1,5 @@
 ﻿using Bogus;
+using System.Text.Json.Serialization;
 
 namespace DEPLOY.AzureServiceBus.API.Util
 {
@@ -26,10 +27,11 @@ namespace DEPLOY.AzureServiceBus.API.Util
                 .ToList();
         }
 
-        //use bogus to create a fake product
         public static List<Product> Products(int quantity)
         {
             return new Faker<Product>(locale: "pt_BR")
+                .RuleFor(p => p.Version, f => 1)
+                .RuleFor(p => p.MessageType, f => MessageType.Command.ToString())
                 .RuleFor(p => p.SKU, f => f.Commerce.Ean13())
                 .RuleFor(p => p.Name, f => f.Commerce.ProductName())
                 .RuleFor(p => p.Price, f => decimal.Parse(f.Commerce.Price()))
@@ -41,12 +43,26 @@ namespace DEPLOY.AzureServiceBus.API.Util
                 .Generate(quantity);
         }
 
-        public class Product
+        public class Product : BaseMessage<int>
         {
             public required string SKU { get; set; }
             public required string Name { get; set; }
             public required decimal Price { get; set; }
             public required int Quantity { get; set; }
+        }
+
+        public class BaseMessage<TVersion>
+        {
+            public required TVersion Version { get; set; }
+            public required string MessageType { get; set; }
+        }
+        
+        public enum MessageType : byte
+        {
+            [JsonConverter(typeof(JsonStringEnumConverter))]
+            Command = 1,
+            [JsonConverter(typeof(JsonStringEnumConverter))]
+            Event = 2
         }
     }
 }

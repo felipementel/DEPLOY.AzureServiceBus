@@ -1,6 +1,0 @@
-@DEPLOY.AzureServiceBus.API_HostAddress = http://localhost:5147
-
-GET {{DEPLOY.AzureServiceBus.API_HostAddress}}/weatherforecast/
-Accept: application/json
-
-###
