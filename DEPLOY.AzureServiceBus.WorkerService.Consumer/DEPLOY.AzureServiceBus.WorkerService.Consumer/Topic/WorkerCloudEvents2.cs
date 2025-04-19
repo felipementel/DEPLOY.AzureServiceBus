@@ -1,15 +1,18 @@
 using Azure.Messaging;
 using Azure.Messaging.ServiceBus;
+using DEPLOY.AzureServiceBus.WorkerService.Consumer.Domain;
 
 namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 {
-    public class WorkerCloudEvents : BackgroundService
+    public class WorkerCloudEvents2 : BackgroundService
     {
-        private readonly ILogger<WorkerCloudEvents> _logger;
+        private readonly string _topicName = "cloud-events";
+        private readonly string _subscribeName = "canal-deploy-mvp-esquenta-blumenau-2";
+        private readonly ILogger<WorkerCloudEvents2> _logger;
         private readonly ServiceBusClient _serviceBusClient;
 
-        public WorkerCloudEvents(
-            ILogger<WorkerCloudEvents> logger,
+        public WorkerCloudEvents2(
+            ILogger<WorkerCloudEvents2> logger,
             ServiceBusClient serviceBusClient)
         {
             _logger = logger;
@@ -32,12 +35,11 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
                 //    Console.WriteLine(Environment.NewLine);
                 //}
 
-                ServiceBusSessionProcessor processor = _serviceBusClient.CreateSessionProcessor(
-                "cloud-events",
-                "canal-deploy-mvp-esquenta-blumenau",
-                new ServiceBusSessionProcessorOptions
+                ServiceBusProcessor processor = _serviceBusClient.CreateProcessor(
+                _topicName,
+                _subscribeName,
+                new ServiceBusProcessorOptions
                 {
-                    MaxConcurrentSessions = 5, // Número máximo de sessões processadas simultaneamente
                     PrefetchCount = 1,
                     AutoCompleteMessages = false
                 });
@@ -47,8 +49,15 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
                     CloudEvent? receivedCloudEvent = CloudEvent.Parse(args.Message.Body);
                     Product? receivedProduct = receivedCloudEvent!.Data!.ToObjectFromJson<Product>();
 
-                    Console.WriteLine(receivedProduct!.Name);
-                    Console.WriteLine(receivedProduct.Quantity);
+                    Console.WriteLine($"Subscriber: {_subscribeName}");
+                    Console.WriteLine($"  Data: {receivedCloudEvent.Data}");
+                    Console.WriteLine($"  Subject: {receivedCloudEvent.Subject}");
+                    Console.WriteLine($"  Type: {receivedCloudEvent.Type}");
+                    Console.WriteLine($"  Source: {receivedCloudEvent.Source}");
+                    Console.WriteLine($"  ID: {receivedCloudEvent.Id}");
+                    Console.WriteLine($"  DataContentType: {receivedCloudEvent.DataContentType}");
+                    Console.WriteLine($"  DataSchema: {receivedCloudEvent.DataSchema}");
+                    Console.WriteLine($"  Time: {receivedCloudEvent.Time}");
 
                     await args.CompleteMessageAsync(args.Message);
                 };
@@ -61,17 +70,12 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 
                 await processor.StartProcessingAsync();
 
+                while (!stoppingToken.IsCancellationRequested)
+                {
+                    await Task.Delay(1000, stoppingToken);
+                }
 
-                //CloudEvent? receivedCloudEvent = CloudEvent.Parse(receivedMessage.Body);
-
-                //Product? receivedProduct = receivedCloudEvent!.Data!.ToObjectFromJson<Product>();
-
-                //Console.WriteLine(receivedProduct!.Name);
-                //Console.WriteLine(receivedProduct.Quantity);
-
-                //await receiver.CompleteMessageAsync(receivedMessage);
-
-                await Task.Delay(1000, stoppingToken);
+                await processor.StopProcessingAsync(stoppingToken);
             }
         }
     }

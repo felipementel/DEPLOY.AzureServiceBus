@@ -2,13 +2,14 @@ using Azure.Messaging.ServiceBus;
 
 namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 {
-    public class WorkerDLQ : BackgroundService
+    public class Worker_DLQ : BackgroundService
     {
-        private readonly ILogger<WorkerDLQ> _logger;
+        private readonly string _queueName = "simple"; //dlq name is the same as the queue name
+        private readonly ILogger<Worker_DLQ> _logger;
         private readonly ServiceBusClient _serviceBusClient;
 
-        public WorkerDLQ(
-            ILogger<WorkerDLQ> logger,
+        public Worker_DLQ(
+            ILogger<Worker_DLQ> logger,
             ServiceBusClient serviceBusClient)
         {
             _logger = logger;
@@ -18,19 +19,24 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
+            bool mustReply = false;
+
             while (!stoppingToken.IsCancellationRequested)
             {
                 if (_logger.IsEnabled(LogLevel.Information))
                 {
                     Console.WriteLine(Environment.NewLine);
-                    _logger.LogInformation("WorkerDLQ running at: {time}",
+                    _logger.LogInformation($"{_queueName}" + " at: {time}",
                         DateTimeOffset.Now);
                     Console.WriteLine(Environment.NewLine);
                 }
 
                 ServiceBusReceiver receiver = _serviceBusClient
-                    .CreateReceiver(queueName: "simple",
-                    new ServiceBusReceiverOptions { SubQueue = SubQueue.DeadLetter });
+                    .CreateReceiver(queueName: _queueName,
+                    new ServiceBusReceiverOptions
+                    {
+                        SubQueue = SubQueue.DeadLetter
+                    });
 
                 ServiceBusReceivedMessage dlqMessage = await receiver
                     .ReceiveMessageAsync(maxWaitTime: TimeSpan.FromMinutes(5),
@@ -45,8 +51,28 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
                     Console.WriteLine($"   DeadLetterReason: {dlqMessage.DeadLetterReason}");
                     Console.WriteLine($"   DeadLetterErrorDescription: {dlqMessage.DeadLetterErrorDescription}");
                     Console.WriteLine(Environment.NewLine);
-                    await receiver
-                        .CompleteMessageAsync(dlqMessage);
+
+                    if (dlqMessage.DeadLetterReason == "Duplicate")
+                    {
+                        await receiver.AbandonMessageAsync(dlqMessage);
+                        Console.WriteLine($"Message {dlqMessage.MessageId} is a duplicate and was abandoned.");
+                    }
+                    else
+                    {
+                        await receiver.CompleteMessageAsync(dlqMessage);
+                        Console.WriteLine($"Message {dlqMessage.MessageId} was completed.");
+                    }
+                    if (dlqMessage.ReplyTo != null)
+                    {
+                        Console.WriteLine($"ReplyTo: {dlqMessage.ReplyTo}");
+                        Console.WriteLine($"SessionId: {dlqMessage.ReplyToSessionId}");
+
+                        mustReply = true;
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Message {dlqMessage.MessageId} has no ReplyTo property.");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -56,7 +82,7 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
                 }
 
                 //Create a event
-                if (dlqMessage.ReplyTo != null)
+                if (mustReply)
                 {
                     ServiceBusSender sender = _serviceBusClient.CreateSender(dlqMessage.ReplyTo);
 
@@ -71,7 +97,6 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
                         ["MessageId"] = dlqMessage.MessageId
                     }
                     }, stoppingToken);
-
                 }
                 else
                 {

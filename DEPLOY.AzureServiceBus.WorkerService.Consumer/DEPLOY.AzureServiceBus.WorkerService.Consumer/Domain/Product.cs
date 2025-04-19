@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
+namespace DEPLOY.AzureServiceBus.WorkerService.Consumer.Domain
 {
     public class Product : BaseMessage<int>
     {

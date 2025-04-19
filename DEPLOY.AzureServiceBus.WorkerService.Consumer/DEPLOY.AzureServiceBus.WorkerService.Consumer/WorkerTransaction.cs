@@ -6,6 +6,7 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 {
     public class WorkerTransaction : BackgroundService
     {
+        const string queueName = "simple-transaction";
         private readonly ILogger<WorkerTransaction> _logger;
         private readonly ServiceBusClient _serviceBusClient;
 
@@ -21,8 +22,6 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            bool mustReply = false;
-
             while (!stoppingToken.IsCancellationRequested)
             {
                 if (_logger.IsEnabled(LogLevel.Information))
@@ -33,17 +32,19 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
                     Console.WriteLine(Environment.NewLine);
                 }
 
-                ServiceBusSender sender = _serviceBusClient.CreateSender("");
+                ServiceBusSender sender = _serviceBusClient.CreateSender(queueName);
 
                 await sender.SendMessageAsync(new ServiceBusMessage(Encoding.UTF8.GetBytes("First")));
 
-                ServiceBusReceiver receiver = _serviceBusClient.CreateReceiver("");
+                ServiceBusReceiver receiver = _serviceBusClient.CreateReceiver(queueName);
                 ServiceBusReceivedMessage firstMessage = await receiver.ReceiveMessageAsync();
 
                 using (var ts = new TransactionScope(TransactionScopeAsyncFlowOption.Enabled))
                 {
                     await sender.SendMessageAsync(new ServiceBusMessage(Encoding.UTF8.GetBytes("Second")));
+
                     await receiver.CompleteMessageAsync(firstMessage);
+
                     ts.Complete();
                 }
 

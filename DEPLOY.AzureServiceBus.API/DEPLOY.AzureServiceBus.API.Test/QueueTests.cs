@@ -1,7 +1,6 @@
 ﻿using Azure.Messaging.ServiceBus;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.VisualStudio.TestPlatform.TestHost;
 using Moq;
 using Xunit;
 
@@ -11,25 +10,28 @@ namespace DEPLOY.AzureServiceBus.API.Test
     {
         private readonly WebApplicationFactory<Program> _factory;
         private readonly HttpClient _httpClient;
+        private readonly Mock<ServiceBusClient> _mockServiceBusClient;
+        private readonly Mock<ServiceBusSender> _mockServiceBusSender;
 
         public QueueEndpointTests(WebApplicationFactory<Program> factory)
         {
             _factory = factory;
             _httpClient = _factory.CreateClient();
+
+            _mockServiceBusClient = new Mock<ServiceBusClient>();
+            _mockServiceBusSender = new Mock<ServiceBusSender>();
         }
 
         [Fact]
         public async Task PostSimpleQueue_ReturnsAccepted()
         {
             // Arrange
-            var mockServiceBusClient = new Mock<ServiceBusClient>();
-            var mockServiceBusSender = new Mock<ServiceBusSender>();
 
-            mockServiceBusClient
+            _mockServiceBusClient
                 .Setup(client => client.CreateSender("simple")) //It.IsAny<string>()
-                .Returns(mockServiceBusSender.Object);
+                .Returns(_mockServiceBusSender.Object);
 
-            mockServiceBusSender
+            _mockServiceBusSender
                 .Setup(sender => sender.SendMessageAsync(
                     It.IsAny<ServiceBusMessage>(),
                     It.IsAny<CancellationToken>()))
@@ -48,14 +50,11 @@ namespace DEPLOY.AzureServiceBus.API.Test
         public async Task PostPartitionQueue_WithQtd_ReturnsAccepted()
         {
             // Arrange
-            var mockServiceBusClient = new Mock<ServiceBusClient>();
-            var mockServiceBusSender = new Mock<ServiceBusSender>();
-
-            mockServiceBusClient
+            _mockServiceBusClient
                 .Setup(client => client.CreateSender(It.IsAny<string>()))
-                .Returns(mockServiceBusSender.Object);
+                .Returns(_mockServiceBusSender.Object);
 
-            mockServiceBusSender
+            _mockServiceBusSender
                 .Setup(sender => sender.SendMessageAsync(
                     It.IsAny<ServiceBusMessage>(),
                     It.IsAny<CancellationToken>()))
@@ -80,26 +79,20 @@ namespace DEPLOY.AzureServiceBus.API.Test
         public async Task PostPartitionQueueBatch_WithQtd_ReturnsAccepted()
         {
             // Arrange
-            var mockServiceBusClient = new Mock<ServiceBusClient>();
-            var mockServiceBusSender = new Mock<ServiceBusSender>();
             var mockMessageBatch = new Mock<ServiceBusMessageBatchWrapper>();
 
-            mockServiceBusClient
+            _mockServiceBusClient
                 .Setup(client => client.CreateSender(It.IsAny<string>()))
-                .Returns(mockServiceBusSender.Object);
+                .Returns(_mockServiceBusSender.Object);
 
-
-
-
-
-            mockServiceBusSender
+            _mockServiceBusSender
                 .Setup(sender => sender.CreateMessageBatchAsync(It.IsAny<CancellationToken>()));
 
             mockMessageBatch
                 .Setup(batch => batch.TryAddMessage(It.IsAny<ServiceBusMessage>()))
                 .Returns(true);
 
-            mockServiceBusSender
+            _mockServiceBusSender
                 .Setup(sender => sender.SendMessagesAsync(
                     It.IsAny<ServiceBusMessageBatch>(),
                     It.IsAny<CancellationToken>()))
@@ -116,14 +109,12 @@ namespace DEPLOY.AzureServiceBus.API.Test
         public async Task PostPartitionSessionQueue_ReturnsAccepted()
         {
             // Arrange
-            var mockServiceBusClient = new Mock<ServiceBusClient>();
-            var mockServiceBusSender = new Mock<ServiceBusSender>();
 
-            mockServiceBusClient
+            _mockServiceBusClient
                 .Setup(client => client.CreateSender(It.IsAny<string>()))
-                .Returns(mockServiceBusSender.Object);
+                .Returns(_mockServiceBusSender.Object);
 
-            mockServiceBusSender
+            _mockServiceBusSender
                 .Setup(sender => sender.SendMessageAsync(
                     It.IsAny<ServiceBusMessage>(),
                     It.IsAny<CancellationToken>()))
@@ -140,24 +131,29 @@ namespace DEPLOY.AzureServiceBus.API.Test
         public async Task PostPartitionSessionQueueBatch_WithQtd_ReturnsAccepted()
         {
             // Arrange
-            var mockServiceBusClient = new Mock<ServiceBusClient>();
-            var mockServiceBusSender = new Mock<ServiceBusSender>();
-            var mockMessageBatch = new Mock<ServiceBusMessageBatchWrapper>();
-
-            mockServiceBusClient
+            _mockServiceBusClient
                 .Setup(client => client.CreateSender(It.IsAny<string>()))
-                .Returns(mockServiceBusSender.Object);
+                .Returns(_mockServiceBusSender.Object);
 
-            mockServiceBusSender
-                .Setup(sender => sender.CreateMessageBatchAsync(CancellationToken.None));
+            List<ServiceBusMessage> backingList = new();
+            int batchCountThreshold = 5;
 
-            mockMessageBatch
-                .Setup(batch => batch.TryAddMessage(It.IsAny<ServiceBusMessage>()))
-                .Returns(true);
+            ServiceBusMessageBatch mockBatch = ServiceBusModelFactory.ServiceBusMessageBatch(
+                batchSizeBytes: 500,
+                batchMessageStore: backingList,
+                batchOptions: new CreateMessageBatchOptions(),
+                // The model factory allows a custom TryAddMessage callback, allowing control of
+                // what messages the batch accepts.
+                tryAddCallback: _ => backingList.Count < batchCountThreshold);
 
-            mockServiceBusSender
+            _mockServiceBusSender
+                .Setup(sender => sender.CreateMessageBatchAsync(
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockBatch);
+
+            _mockServiceBusSender
                 .Setup(sender => sender.SendMessagesAsync(
-                    It.IsAny<ServiceBusMessageBatch>(),
+                    It.Is<ServiceBusMessageBatch>(sendBatch => sendBatch != mockBatch),
                     It.IsAny<CancellationToken>()))
                 .Returns(Task.CompletedTask);
 
@@ -166,6 +162,12 @@ namespace DEPLOY.AzureServiceBus.API.Test
 
             // Assert
             Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
+
+            //_mockServiceBusSender
+            //    .Verify(sender => sender.SendMessagesAsync(
+            //        It.IsAny<ServiceBusMessageBatch>(),
+            //        It.IsAny<CancellationToken>()),
+            //    Times.Once);
         }
     }
 }

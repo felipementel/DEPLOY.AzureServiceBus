@@ -1,6 +1,5 @@
 ﻿using Azure.Messaging.ServiceBus;
 using DEPLOY.AzureServiceBus.API.Config;
-using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Options;
 
 namespace DEPLOY.AzureServiceBus.API.Extensions

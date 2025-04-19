@@ -1,7 +1,6 @@
 using Azure.Messaging.ServiceBus;
 using Microsoft.AspNetCore.Mvc;
-using System.Text.Json;
-using static DEPLOY.AzureServiceBus.API.Util.GenerateData;
+using System.Text.Unicode;
 
 namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
 {
@@ -12,9 +11,6 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
             const string QueueTag = "Queue";
 
             const string simple = "simple";
-            const string auto_delete = "auto-delete";
-            const string partition = "partition";
-            const string partition_session = "partition-session";
 
             var apiVersionSetQueue_V1 = app
                 .NewApiVersionSet(QueueTag)
@@ -27,16 +23,15 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                 .WithApiVersionSet(apiVersionSetQueue_V1);
 
             Queue_V1
-                .MapPost($"/{simple}", async
-                (ServiceBusClient serviceBusClient,
-                CancellationToken cancellationToken) =>
+                .MapPost($"/{simple}", async (
+                    ServiceBusClient serviceBusClient,
+                    CancellationToken cancellationToken) =>
                 {
-                    ServiceBusSender sender = serviceBusClient.CreateSender(simple);
+                    ServiceBusSender sender = serviceBusClient.CreateSender($"{simple}-product");
                     await sender.SendMessageAsync(new ServiceBusMessage()
                     {
                         Body = BinaryData.FromObjectAsJson(Util.GenerateData.Products(1)),
-                        ContentType = "application/json",
-                        ReplyTo = "simple-reply",
+                        ContentType = "application/json"
                     }, cancellationToken);
 
                     return Results.Accepted();
@@ -52,27 +47,84 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                         new() { Name = QueueTag }
                     }
                 })
-                .WithSummary($"post queue {simple} v1");
+                .WithSummary($"post queue {simple} v1 - Command Create Product");
 
             Queue_V1
-                .MapPost($"/partition/{partition}/batch/{{qtd}}", async
-                ([FromRoute] int qtd,
-                ServiceBusClient serviceBusClient,
-                CancellationToken cancellationToken) =>
+                .MapPost($"/{simple}-duplicate", async (
+                    [FromBody] string msg,
+                    ServiceBusClient serviceBusClient,
+                    CancellationToken cancellationToken) =>
                 {
-                    ServiceBusSender sender = serviceBusClient.CreateSender(partition);
-                    List<ServiceBusMessage> messages = new();
-                    List<Product> products = Util.GenerateData.Products(qtd);
-
-                    products.ForEach(product =>
+                    ServiceBusSender sender = serviceBusClient.CreateSender($"{simple}-duplicate");
+                    await sender.SendMessageAsync(new ServiceBusMessage()
                     {
-                        messages.Add(new ServiceBusMessage()
+                        Body = BinaryData.FromString(msg),
+                        ContentType = "application/json",
+                        MessageId = msg.Length.ToString(),
+                    }, cancellationToken);
+
+                    return Results.Accepted();
+                })
+                .Produces(StatusCodes.Status202Accepted)
+                .WithOpenApi(operation => new(operation)
+                {
+                    OperationId = $"post-queue-{simple}-duplicate-v1",
+                    Summary = $"post queue {simple}-duplicate v1",
+                    Description = $"post queue {simple}-duplicate v1",
+                    Tags = new List<Microsoft.OpenApi.Models.OpenApiTag>
+                    {
+                        new() { Name = QueueTag }
+                    }
+                })
+                .WithSummary($"post queue {simple} duplicate v1 - Command Create Product");
+
+            Queue_V1
+                .MapPost($"/{simple}-schedule", async (
+                    [FromBody] string msg,
+                    [FromHeader] double scheduleInSecconds,
+                    ServiceBusClient serviceBusClient,
+                    CancellationToken cancellationToken) =>
+                {
+                    ServiceBusSender sender = serviceBusClient.CreateSender($"{simple}-schedule");
+                    await sender.ScheduleMessageAsync(new ServiceBusMessage()
+                    {
+                        Body = BinaryData.FromString(msg),
+                        ContentType = "application/json",
+                    }, DateTimeOffset.Now.AddSeconds(scheduleInSecconds),
+                    cancellationToken);
+
+                    return Results.Accepted();
+                })
+                .Produces(StatusCodes.Status202Accepted)
+                .WithOpenApi(operation => new(operation)
+                {
+                    OperationId = $"post-queue-{simple}-schedule-v1",
+                    Summary = $"post queue {simple}-schedule v1",
+                    Description = $"post queue {simple}-schedule v1",
+                    Tags = new List<Microsoft.OpenApi.Models.OpenApiTag>
+                    {
+                        new() { Name = QueueTag }
+                    }
+                })
+                .WithSummary($"post queue {simple} schedule v1 - Command Create Product");
+
+            Queue_V1
+                .MapPost($"/{simple}/{{qtd}}", async (
+                    [FromRoute] int qtd,
+                    ServiceBusClient serviceBusClient,
+                    CancellationToken cancellationToken) =>
+                {
+                    ServiceBusSender sender = serviceBusClient.CreateSender($"{simple}-batch");
+
+                    List<ServiceBusMessage> messages = new();
+                    for (int i = 0; i < qtd; i++)
+                    {
+                        messages.Add(new ServiceBusMessage(BinaryData.FromString($"Canal DEPLOY | MVPConf Blumenau {i}"))
                         {
-                            Body = BinaryData.FromObjectAsJson(product),
-                            ContentType = "application/json",
-                            PartitionKey = product.Quantity % 2 == 0 ? "PAR" : "IMPAR"
+                            ContentType = "application/text",
+                            ReplyTo = "simple-reply",
                         });
-                    });
+                    }
 
                     await SendBatch(sender, messages);
 
@@ -81,118 +133,15 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                 .Produces(StatusCodes.Status202Accepted)
                 .WithOpenApi(operation => new(operation)
                 {
-                    OperationId = $"post-queue-{partition} batch v1",
-                    Summary = $"post queue {partition} batch v1",
-                    Description = $"post queue {partition} batch v1",
+                    OperationId = $"post-queue-{simple}-qtd--v1",
+                    Summary = $"post queue {simple} qtd v1",
+                    Description = $"post queue {simple} qtd v1",
                     Tags = new List<Microsoft.OpenApi.Models.OpenApiTag>
                     {
                         new() { Name = QueueTag }
                     }
                 })
-                .WithSummary($"post queue {partition} batch v1");
-
-            Queue_V1
-                .MapPost($"/partition/{partition}/{{qtd}}", async
-                ([FromRoute] int qtd,
-                ServiceBusClient serviceBusClient,
-                CancellationToken cancellationToken) =>
-                {
-                    List<int> numeros = Util.GenerateData.Numbers(0, 100, qtd);
-
-                    ServiceBusSender sender = serviceBusClient.CreateSender(partition);
-                    int numeroAleatorio = numeros[new Random().Next(0, numeros.Count)];
-                    await sender.SendMessageAsync(new ServiceBusMessage()
-                    {
-                        Body = BinaryData.FromString($"Canal DEPLOY {numeroAleatorio}"),
-                        ContentType = "application/text",
-                        PartitionKey = numeroAleatorio % 2 == 0 ? "PAR" : "IMPAR"
-                    }, cancellationToken);
-
-                    return Results.Accepted();
-                })
-                .Produces(StatusCodes.Status202Accepted)
-                .WithOpenApi(operation => new(operation)
-                {
-                    OperationId = $"post-queue-{partition}-v1",
-                    Summary = $"post queue {partition} v1",
-                    Description = $"post queue {partition} v1",
-                    Tags = new List<Microsoft.OpenApi.Models.OpenApiTag>
-                    {
-                        new() { Name = QueueTag }
-                    }
-                })
-                .WithSummary($"post queue {partition} v1");
-
-            Queue_V1
-                .MapPost($"/partition_session/{partition_session}", async
-                (ServiceBusClient serviceBusClient,
-                CancellationToken cancellationToken) =>
-                {
-                    List<int> numeros = Util.GenerateData.Numbers(50, 200, 40);
-
-                    ServiceBusSender sender = serviceBusClient.CreateSender(partition_session);
-                    int numeroAleatorio = numeros[new Random().Next(0, numeros.Count)];
-
-                    await sender.SendMessageAsync(new ServiceBusMessage()
-                    {
-                        Body = BinaryData.FromString($"Canal DEPLOY {numeroAleatorio}"),
-                        ContentType = "application/text",
-                        PartitionKey = numeroAleatorio / 2 == 0 ? "PAR" : "IMPAR",
-                        SessionId = numeroAleatorio > 99 ? "MAIOR 100" : "MENOR 100"
-                    }, cancellationToken);
-
-                    return Results.Accepted();
-                })
-                .Produces(StatusCodes.Status202Accepted)
-                .WithOpenApi(operation => new(operation)
-                {
-                    OperationId = $"post-queue-{partition_session}-v1",
-                    Summary = $"post queue {partition_session} v1",
-                    Description = $"post queue {partition_session} v1",
-                    Tags = new List<Microsoft.OpenApi.Models.OpenApiTag>
-                    {
-                        new() { Name = QueueTag }
-                    }
-                })
-                .WithSummary($"post queue {partition_session} v1");
-
-            Queue_V1
-                .MapPost($"/partition_session/{partition_session}/batch/{{qtd}}", async
-                ([FromRoute] int qtd,
-                ServiceBusClient serviceBusClient,
-                CancellationToken cancellationToken) =>
-                {
-                    ServiceBusSender sender = serviceBusClient.CreateSender(partition);
-                    List<ServiceBusMessage> messages = new();
-                    List<Product> products = Util.GenerateData.Products(qtd);
-
-                    products.ForEach(product =>
-                    {
-                        messages.Add(new ServiceBusMessage()
-                        {
-                            Body = BinaryData.FromObjectAsJson(product),
-                            ContentType = "application/json",
-                            PartitionKey = product.Quantity % 2 == 0 ? "PAR" : "IMPAR",
-                            SessionId = product.Price > 99.9M ? "MAIOR 100" : "MENOR 100"
-                        });
-                    });
-
-                    await SendBatch(sender, messages);
-
-                    return Results.Accepted();
-                })
-                .Produces(StatusCodes.Status202Accepted)
-                .WithOpenApi(operation => new(operation)
-                {
-                    OperationId = $"post-queue-{partition_session}-v1",
-                    Summary = $"post queue {partition_session} v1",
-                    Description = $"post queue {partition_session} v1",
-                    Tags = new List<Microsoft.OpenApi.Models.OpenApiTag>
-                    {
-                        new() { Name = QueueTag }
-                    }
-                })
-                .WithSummary($"post queue {partition_session} v1");
+                .WithSummary($"post queue {simple} qtd v1 - Command Create Products");
         }
 
         public static async Task SendBatch(

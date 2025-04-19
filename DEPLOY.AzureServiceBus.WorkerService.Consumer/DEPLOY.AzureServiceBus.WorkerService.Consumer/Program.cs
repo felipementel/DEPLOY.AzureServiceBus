@@ -6,11 +6,22 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddAzureServiceBusConfig();
 builder.Services.AddOptionConfig();
 
-//builder.Services.AddHostedService<Worker>();
+Console.Clear();
+
+// 1
+//builder.Services.AddHostedService<Worker_Product>();
+//builder.Services.AddHostedService<Worker_Batch>();
+//builder.Services.AddHostedService<Worker_Batch_Processor>();
+//builder.Services.AddHostedService<Worker_Duplicate>();
 //builder.Services.AddHostedService<WorkerDLQ>();
-//builder.Services.AddHostedService<WorkerProcessor>();
-//builder.Services.AddHostedService<WorkerPartitionSession>();
+
+// 2
+//builder.Services.AddHostedService<Worker_Processor_Partition>();
+//builder.Services.AddHostedService<Worker_Processor_Partition_Session>();
+
+// Topic
 builder.Services.AddHostedService<WorkerCloudEvents>();
+builder.Services.AddHostedService<WorkerCloudEvents2>();
 
 var host = builder.Build();
 

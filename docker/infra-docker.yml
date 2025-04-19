@@ -6,6 +6,7 @@
 
 # docker system prune -a -f && docker volume prune && docker network prune && docker container prune
 
+# Endpoint=sb://localhost;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;
 name: microsoft-azure-servicebus-emulator
 services:
   emulator:

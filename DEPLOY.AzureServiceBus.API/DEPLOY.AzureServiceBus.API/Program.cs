@@ -1,4 +1,5 @@
 using DEPLOY.AzureServiceBus.API.Endpoints.v1;
+using DEPLOY.AzureServiceBus.API.Endpoints.v2;
 using DEPLOY.AzureServiceBus.API.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,8 +20,13 @@ else
     app.UseHttpsRedirection();
 }
 
+//Queue (v1)
 app.MapQueueEndpointsV1();
-app.MapTopicsEndpointsV1();
+app.MapQueuePartitionEndpointsV1();
+app.MapQueueSessionEndpointsV1();
+
+//Topic (v2)
+app.MapTopicsEndpointsV2();
 
 await app.RunAsync();
 
