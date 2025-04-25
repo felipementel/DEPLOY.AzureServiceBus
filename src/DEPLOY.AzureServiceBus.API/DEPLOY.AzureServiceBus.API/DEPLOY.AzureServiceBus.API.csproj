@@ -9,7 +9,7 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <None Include="_requests\http-client.env.json" />
+		<None Include="_requests\http-client.env.json" />
 	</ItemGroup>
 
 	<ItemGroup>
