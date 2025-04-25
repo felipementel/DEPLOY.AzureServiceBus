@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35931.197
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEPLOY.AzureServiceBus.API.Test", "DEPLOY.AzureServiceBus.API.Test\DEPLOY.AzureServiceBus.API.Test.csproj", "{65F331F4-DED2-47B6-91CA-955FB0782B41}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEPLOY.AzureServiceBus.API", "DEPLOY.AzureServiceBus.API\DEPLOY.AzureServiceBus.API.csproj", "{8C029017-A4CD-44EA-F958-B5D3C5CEA6DD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{65F331F4-DED2-47B6-91CA-955FB0782B41}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{65F331F4-DED2-47B6-91CA-955FB0782B41}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{65F331F4-DED2-47B6-91CA-955FB0782B41}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{65F331F4-DED2-47B6-91CA-955FB0782B41}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8C029017-A4CD-44EA-F958-B5D3C5CEA6DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C029017-A4CD-44EA-F958-B5D3C5CEA6DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C029017-A4CD-44EA-F958-B5D3C5CEA6DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C029017-A4CD-44EA-F958-B5D3C5CEA6DD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
