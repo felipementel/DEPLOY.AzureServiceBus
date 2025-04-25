@@ -6,7 +6,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v2
 {
     public static partial class DEPLOYEndpoint
     {
-        public static void MapTopicsEndpointsV2(this IEndpointRouteBuilder app)
+        public static void MapTopicsCloudEventsEndpointsV2(this IEndpointRouteBuilder app)
         {
             const string TopicTag = "Topic";
             const string topic_cloud_events = "cloud-events";

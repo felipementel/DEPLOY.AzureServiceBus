@@ -27,6 +27,7 @@ app.MapQueueSessionEndpointsV1();
 
 //Topic (v2)
 app.MapTopicsEndpointsV2();
+app.MapTopicsCloudEventsEndpointsV2
 
 await app.RunAsync();
 
