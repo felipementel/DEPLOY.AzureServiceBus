@@ -23,7 +23,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                 .WithApiVersionSet(apiVersionSetQueue_V1);
 
             Queue_V1
-                .MapPost($"/partition_session/{partition_session}/{{qtd}}", async
+                .MapPost($"/{partition_session}/{{qtd}}", async
                 ([FromRoute] int qtd,
                 ServiceBusClient serviceBusClient,
                 CancellationToken cancellationToken) =>
@@ -67,55 +67,56 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                 .WithSummary($"post queue {partition_session} v1");
 
 
-            //Queue_V1
-            //    .MapPost($"/partition_session/{partition_session}/batch/{{qtd}}", async
-            //    ([FromRoute] int qtd,
-            //    ServiceBusClient serviceBusClient,
-            //    CancellationToken cancellationToken) =>
-            //    {
-            //        ServiceBusSender sender = serviceBusClient.CreateSender(partition_session);
-            //        List<ServiceBusMessage> messagesPAR = new();
-            //        List<ServiceBusMessage> messagesIMPAR = new();
-            //        List<Product> products = Util.GenerateData.Products(qtd);
+            Queue_V1
+                .MapPost($"/{partition_session}/batch/{{qtd}}", async
+                ([FromRoute] int qtd,
+                ServiceBusClient serviceBusClient,
+                CancellationToken cancellationToken) =>
+                {
+                    ServiceBusSender sender = serviceBusClient.CreateSender(partition_session);
+                    List<ServiceBusMessage> messagesPAR = new();
+                    List<ServiceBusMessage> messagesIMPAR = new();
+                    List<Product> products = Util.GenerateData.Products(qtd);
 
-            //        products.ForEach(product =>
-            //        {
-            //            if (product.Price > 99.9M)
-            //                messagesPAR.Add(new ServiceBusMessage()
-            //                {
-            //                    Body = BinaryData.FromObjectAsJson(product),
-            //                    ContentType = "application/json",
-            //                    PartitionKey = product.Quantity % 2 == 0 ? "PAR" : "IMPAR",
-            //                    SessionId = "MAIOR 100"
-            //                });
-            //            else
-            //                messagesPAR.Add(new ServiceBusMessage()
-            //                {
-            //                    Body = BinaryData.FromObjectAsJson(product),
-            //                    ContentType = "application/json",
-            //                    PartitionKey = product.Quantity % 2 == 0 ? "PAR" : "IMPAR",
-            //                    SessionId = "MENOR 100"
-            //                });
-            //        });
+                    products.ForEach(product =>
+                    {
+                        if (product.Price > 99.9M)
+                            messagesPAR.Add(new ServiceBusMessage()
+                            {
+                                Body = BinaryData.FromObjectAsJson(product),
+                                ContentType = "application/json",
+                                PartitionKey = product.Quantity % 2 == 0 ? "PAR" : "IMPAR",
+                                SessionId = "MAIOR 100"
+                            });
+                        else
+                            messagesPAR.Add(new ServiceBusMessage()
+                            {
+                                Body = BinaryData.FromObjectAsJson(product),
+                                ContentType = "application/json",
+                                PartitionKey = product.Quantity % 2 == 0 ? "PAR" : "IMPAR",
+                                SessionId = "MENOR 100"
+                            });
+                    });
 
-            //        await SendBatchSession(sender, messagesPAR);
-            //        await SendBatchSession(sender, messagesIMPAR);
+                    await SendBatchSession(sender, messagesPAR);
+                    await SendBatchSession(sender, messagesIMPAR);
 
-            //        return Results.Accepted();
-            //    })
-            //    .Produces(StatusCodes.Status202Accepted)
-            //    .WithOpenApi(operation => new(operation)
-            //    {
-            //        OperationId = $"post-queue-{partition_session}-v1",
-            //        Summary = $"post queue {partition_session} v1",
-            //        Description = $"post queue {partition_session} v1",
-            //        Tags = new List<Microsoft.OpenApi.Models.OpenApiTag>
-            //        {
-            //            new() { Name = QueueTag }
-            //        }
-            //    })
-            //    .WithSummary($"post queue {partition_session} v1");
+                    return Results.Accepted();
+                })
+                .Produces(StatusCodes.Status202Accepted)
+                .WithOpenApi(operation => new(operation)
+                {
+                    OperationId = $"post-queue-{partition_session}-v1",
+                    Summary = $"post queue {partition_session} v1",
+                    Description = $"post queue {partition_session} v1",
+                    Tags = new List<Microsoft.OpenApi.Models.OpenApiTag>
+                    {
+                        new() { Name = QueueTag }
+                    }
+                })
+                .WithSummary($"post queue {partition_session} v1");
         }
+
         private static async Task SendBatchSession(
         ServiceBusSender serviceBusSender,
         List<ServiceBusMessage> serviceBusMessages)

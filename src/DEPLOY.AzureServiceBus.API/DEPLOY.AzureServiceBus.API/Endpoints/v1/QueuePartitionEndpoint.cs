@@ -23,7 +23,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                 .WithApiVersionSet(apiVersionSetQueue_V1);
 
             Queue_V1
-                .MapPost($"/partition/{partition}", async
+                .MapPost($"/{partition}", async
                 (ServiceBusClient serviceBusClient,
                 CancellationToken cancellationToken) =>
                 {
@@ -57,7 +57,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                 .WithSummary($"post queue {partition} v1 - Product");
 
             Queue_V1
-                .MapPost($"/partition/{partition}/batch/{{qtd}}", async
+                .MapPost($"/{partition}/batch/{{qtd}}", async
                 ([FromRoute] int qtd,
                 ServiceBusClient serviceBusClient,
                 CancellationToken cancellationToken) =>
@@ -92,9 +92,6 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                     }
                 })
                 .WithSummary($"post queue {partition} batch v1");
-
-            
-
         }
     }
 }
