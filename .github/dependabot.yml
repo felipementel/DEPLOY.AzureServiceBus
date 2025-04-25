@@ -1,0 +1,56 @@
+# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+# https://docs.github.com/en/code-security/dependabot/working-with-dependabot/dependabot-options-reference
+
+# timezone: https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
+
+version: 2
+updates:
+  - package-ecosystem: "nuget"
+    directory: "/src"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "00:00"
+      timezone: "America/Sao_Paulo"
+    reviewers:
+      - "felipementel"
+    assignees:
+      - "felipementel"
+    labels:
+      - "dependabot"
+    commit-message:
+      prefix: "[nuget] "
+
+  - package-ecosystem: "docker"
+    directory: "/docker"
+    registries:
+      - dockerhub
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "01:00"
+      timezone: "America/Sao_Paulo"
+    reviewers:
+      - "felipementel"
+    assignees:
+      - "felipementel"
+    labels:
+      - "dependabot"
+    commit-message:
+      prefix: "[docker] "
+
+  - package-ecosystem: "github-actions"
+    directory: "/.github/workflows"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "02:00"
+      timezone: "America/Sao_Paulo"
+    reviewers:
+      - "felipementel"
+    assignees:
+      - "felipementel"
+    labels:
+      - "dependabot"
+    commit-message:
+      prefix: "[github actions] "
