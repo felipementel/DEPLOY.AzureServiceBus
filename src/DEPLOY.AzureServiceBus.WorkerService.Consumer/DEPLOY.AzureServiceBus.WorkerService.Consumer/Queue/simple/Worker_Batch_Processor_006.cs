@@ -2,23 +2,23 @@ using Azure.Messaging.ServiceBus;
 
 namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 {
-    public class Worker_Processor_Partition : BackgroundService
+    public class Worker_Batch_Processor_006 : BackgroundService
     {
-        const string queueName = "partition";
-        private readonly ILogger<Worker_Processor_Partition> _logger;
+        private readonly string _queueName = "simple-batch";
+        private readonly ILogger<Worker_Batch_Processor_006> _logger;
         private readonly ServiceBusClient _serviceBusClient;
 
-        public Worker_Processor_Partition(
-            ILogger<Worker_Processor_Partition> logger,
+        public Worker_Batch_Processor_006(
+            ILogger<Worker_Batch_Processor_006> logger,
             ServiceBusClient serviceBusClient)
         {
             _logger = logger;
             _serviceBusClient = serviceBusClient;
         }
 
-        /*O processador oferece conclusão automática de mensagens processadas,
-         * renovação automática de bloqueio de mensagens e
-         * execução simultânea de manipuladores de eventos especificados pelo usuário.
+        /* O processador oferece conclusao automatica de mensagens processadas,
+         * renovacao automatica de bloqueio de mensagens e
+         * execucao simultanea de manipuladores de eventos especificados pelo usuario.
          */
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -27,13 +27,12 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
             if (_logger.IsEnabled(LogLevel.Information))
             {
                 Console.WriteLine(Environment.NewLine);
-                _logger.LogInformation($"{queueName}" + " at: {time}",
-                    DateTimeOffset.Now);
+                _logger.LogInformation($"{_queueName} at: {DateTimeOffset.Now}");
                 Console.WriteLine(Environment.NewLine);
             }
 
             ServiceBusProcessor processor = _serviceBusClient
-                .CreateProcessor(queueName: queueName, new ServiceBusProcessorOptions()
+                .CreateProcessor(queueName: _queueName, new ServiceBusProcessorOptions()
                 {
                     MaxConcurrentCalls = 50,
                     AutoCompleteMessages = false,
@@ -55,9 +54,7 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
         async Task MessageHandler(ProcessMessageEventArgs args)
         {
             string body = args.Message.Body.ToString();
-
             Console.WriteLine(body);
-            Console.WriteLine($"    PartitionKey: {args.Message.PartitionKey}");
 
             await args.CompleteMessageAsync(args.Message);
         }

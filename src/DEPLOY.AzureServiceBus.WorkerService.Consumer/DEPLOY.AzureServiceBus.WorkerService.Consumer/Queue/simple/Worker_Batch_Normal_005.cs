@@ -2,14 +2,14 @@ using Azure.Messaging.ServiceBus;
 
 namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 {
-    public class Worker_Batch : BackgroundService
+    public class Worker_Batch_Normal_005 : BackgroundService
     {
         private readonly string _queueName = "simple-batch";
-        private readonly ILogger<Worker_Batch> _logger;
+        private readonly ILogger<Worker_Batch_Normal_005> _logger;
         private readonly ServiceBusClient _serviceBusClient;
 
-        public Worker_Batch(
-            ILogger<Worker_Batch> logger,
+        public Worker_Batch_Normal_005(
+            ILogger<Worker_Batch_Normal_005> logger,
             ServiceBusClient serviceBusClient)
         {
             _logger = logger;
@@ -24,14 +24,6 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                //if (_logger.IsEnabled(LogLevel.Information))
-                //{
-                //    Console.WriteLine(Environment.NewLine);
-                //    _logger.LogInformation($"{_queueName}" + " at: {time}",
-                //        DateTimeOffset.Now);
-                //    Console.WriteLine(Environment.NewLine);
-                //}
-
                 ServiceBusReceiver receiver = _serviceBusClient
                     .CreateReceiver(queueName: _queueName);
 

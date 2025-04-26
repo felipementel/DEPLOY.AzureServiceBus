@@ -2,14 +2,14 @@ using Azure.Messaging.ServiceBus;
 
 namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 {
-    public class WorkerSimpleQtd : BackgroundService
+    public class Worker_Duplicate_002 : BackgroundService
     {
-        private readonly string _queueName = "simple";
-        private readonly ILogger<WorkerSimpleQtd> _logger;
+        private readonly string _queueName = "simple-duplicate";
+        private readonly ILogger<Worker_Duplicate_002> _logger;
         private readonly ServiceBusClient _serviceBusClient;
 
-        public WorkerSimpleQtd(
-            ILogger<WorkerSimpleQtd> logger,
+        public Worker_Duplicate_002(
+            ILogger<Worker_Duplicate_002> logger,
             ServiceBusClient serviceBusClient)
         {
             _logger = logger;
@@ -25,15 +25,16 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
                 if (_logger.IsEnabled(LogLevel.Information))
                 {
                     Console.WriteLine(Environment.NewLine);
-                    _logger.LogInformation($"{_queueName}" + " at: {time}",
-                        DateTimeOffset.Now);
+                    _logger.LogInformation($"{_queueName} at: {DateTimeOffset.Now}");
                     Console.WriteLine(Environment.NewLine);
                 }
 
                 ServiceBusReceiver receiver = _serviceBusClient
                     .CreateReceiver(queueName: _queueName, new ServiceBusReceiverOptions()
                     {
-
+                        PrefetchCount = 10,
+                        ReceiveMode = ServiceBusReceiveMode.PeekLock,
+                        SubQueue = SubQueue.None,
                     });
 
                 ServiceBusReceivedMessage msgReceived = await receiver
@@ -46,7 +47,7 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 
                 await receiver.CompleteMessageAsync(msgReceived);
 
-                //await Task.Delay(1000, stoppingToken);
+                await Task.Delay(1000, stoppingToken);
             }
         }
     }

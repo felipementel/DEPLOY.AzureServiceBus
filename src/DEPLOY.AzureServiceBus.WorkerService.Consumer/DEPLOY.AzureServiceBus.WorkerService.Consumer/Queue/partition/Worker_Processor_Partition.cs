@@ -2,23 +2,23 @@ using Azure.Messaging.ServiceBus;
 
 namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 {
-    public class Worker_Batch_Processor : BackgroundService
+    public class Worker_Processor_Partition : BackgroundService
     {
-        private readonly string _queueName = "simple-batch";
-        private readonly ILogger<Worker_Batch_Processor> _logger;
+        private readonly string _queueName = "partition";
+        private readonly ILogger<Worker_Processor_Partition> _logger;
         private readonly ServiceBusClient _serviceBusClient;
 
-        public Worker_Batch_Processor(
-            ILogger<Worker_Batch_Processor> logger,
+        public Worker_Processor_Partition(
+            ILogger<Worker_Processor_Partition> logger,
             ServiceBusClient serviceBusClient)
         {
             _logger = logger;
             _serviceBusClient = serviceBusClient;
         }
 
-        /*O processador oferece conclus�o autom�tica de mensagens processadas,
-         * renova��o autom�tica de bloqueio de mensagens e
-         * execu��o simult�nea de manipuladores de eventos especificados pelo usu�rio.
+        /* O processador oferece conclusao automatica de mensagens processadas,
+         * renovacao automatica de bloqueio de mensagens e
+         * execucao simultanea de manipuladores de eventos especificados pelo usuario.
          */
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -27,8 +27,7 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
             if (_logger.IsEnabled(LogLevel.Information))
             {
                 Console.WriteLine(Environment.NewLine);
-                _logger.LogInformation($"{_queueName}" + " at: {time}",
-                    DateTimeOffset.Now);
+                _logger.LogInformation($"{_queueName} at: {DateTimeOffset.Now}");
                 Console.WriteLine(Environment.NewLine);
             }
 
@@ -55,7 +54,9 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
         async Task MessageHandler(ProcessMessageEventArgs args)
         {
             string body = args.Message.Body.ToString();
+
             Console.WriteLine(body);
+            Console.WriteLine($"    PartitionKey: {args.Message.PartitionKey}");
 
             await args.CompleteMessageAsync(args.Message);
         }

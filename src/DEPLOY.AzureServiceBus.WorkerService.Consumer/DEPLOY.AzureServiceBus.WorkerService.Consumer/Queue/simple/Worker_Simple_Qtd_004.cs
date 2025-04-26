@@ -2,14 +2,14 @@ using Azure.Messaging.ServiceBus;
 
 namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 {
-    public class Worker_Schedule : BackgroundService
+    public class Worker_Simple_Qtd_004 : BackgroundService
     {
-        private readonly string _queueName = "simple-schedule";
-        private readonly ILogger<Worker_Schedule> _logger;
+        private readonly string _queueName = "simple";
+        private readonly ILogger<Worker_Simple_Qtd_004> _logger;
         private readonly ServiceBusClient _serviceBusClient;
 
-        public Worker_Schedule(
-            ILogger<Worker_Schedule> logger,
+        public Worker_Simple_Qtd_004(
+            ILogger<Worker_Simple_Qtd_004> logger,
             ServiceBusClient serviceBusClient)
         {
             _logger = logger;
@@ -20,22 +20,21 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            bool mustReply = false;
-
             while (!stoppingToken.IsCancellationRequested)
             {
                 if (_logger.IsEnabled(LogLevel.Information))
                 {
                     Console.WriteLine(Environment.NewLine);
-                    _logger.LogInformation("Duplicate at: {time}",
-                        DateTimeOffset.Now);
+                    _logger.LogInformation($"{_queueName} at: {DateTimeOffset.Now}");
                     Console.WriteLine(Environment.NewLine);
                 }
 
                 ServiceBusReceiver receiver = _serviceBusClient
                     .CreateReceiver(queueName: _queueName, new ServiceBusReceiverOptions()
                     {
-
+                        PrefetchCount = 100,
+                        ReceiveMode = ServiceBusReceiveMode.PeekLock,
+                        SubQueue = SubQueue.None,
                     });
 
                 ServiceBusReceivedMessage msgReceived = await receiver
@@ -48,7 +47,7 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 
                 await receiver.CompleteMessageAsync(msgReceived);
 
-                await Task.Delay(1000, stoppingToken);
+                //await Task.Delay(1000, stoppingToken);
             }
         }
     }

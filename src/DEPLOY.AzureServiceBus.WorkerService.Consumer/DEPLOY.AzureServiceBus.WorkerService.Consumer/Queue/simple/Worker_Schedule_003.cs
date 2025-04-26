@@ -2,14 +2,14 @@ using Azure.Messaging.ServiceBus;
 
 namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 {
-    public class Worker_Duplicate : BackgroundService
+    public class Worker_Schedule_003 : BackgroundService
     {
-        private readonly string _queueName = "simple-duplicate";
-        private readonly ILogger<Worker_Duplicate> _logger;
+        private readonly string _queueName = "simple-schedule";
+        private readonly ILogger<Worker_Schedule_003> _logger;
         private readonly ServiceBusClient _serviceBusClient;
 
-        public Worker_Duplicate(
-            ILogger<Worker_Duplicate> logger,
+        public Worker_Schedule_003(
+            ILogger<Worker_Schedule_003> logger,
             ServiceBusClient serviceBusClient)
         {
             _logger = logger;
@@ -20,15 +20,12 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            bool mustReply = false;
-
             while (!stoppingToken.IsCancellationRequested)
             {
                 if (_logger.IsEnabled(LogLevel.Information))
                 {
                     Console.WriteLine(Environment.NewLine);
-                    _logger.LogInformation("Duplicate at: {time}",
-                        DateTimeOffset.Now);
+                    _logger.LogInformation($"{_queueName} at: {DateTimeOffset.Now}");
                     Console.WriteLine(Environment.NewLine);
                 }
 

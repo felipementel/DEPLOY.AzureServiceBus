@@ -11,7 +11,7 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer.Extensions
             services.AddSingleton(_ =>
             {
                 var config = _.GetRequiredService<IOptions<ParametersConfig>>().Value;
-                return new ServiceBusClient(config.AzureServiceBus.ConnectionString, new ServiceBusClientOptions()
+                return new ServiceBusClient(config!.AzureServiceBus.ConnectionString, new ServiceBusClientOptions()
                 {
 
                 });

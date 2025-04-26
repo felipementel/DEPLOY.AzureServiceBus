@@ -63,20 +63,30 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                 CancellationToken cancellationToken) =>
                 {
                     ServiceBusSender sender = serviceBusClient.CreateSender(partition);
-                    List<ServiceBusMessage> messages = new();
+                    List<ServiceBusMessage> messagesPAR = new();
+                    List<ServiceBusMessage> messagesIMPAR = new();
                     List<Product> products = Util.GenerateData.Products(qtd);
 
                     products.ForEach(product =>
                     {
-                        messages.Add(new ServiceBusMessage()
-                        {
-                            Body = BinaryData.FromObjectAsJson(product),
-                            ContentType = "application/json",
-                            PartitionKey = product.Quantity % 2 == 0 ? "PAR" : "IMPAR"
-                        });
+                        if (product.Quantity % 2 == 0)
+                            messagesPAR.Add(new ServiceBusMessage()
+                            {
+                                Body = BinaryData.FromObjectAsJson(product),
+                                ContentType = "application/json",
+                                PartitionKey = "PAR"
+                            });
+                        else
+                            messagesIMPAR.Add(new ServiceBusMessage()
+                            {
+                                Body = BinaryData.FromObjectAsJson(product),
+                                ContentType = "application/json",
+                                PartitionKey = "IMPAR"
+                            });
                     });
 
-                    await SendBatch(sender, messages);
+                    await SendBatch(sender, messagesPAR);
+                    await SendBatch(sender, messagesIMPAR);
 
                     return Results.Accepted();
                 })

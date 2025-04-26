@@ -1,5 +1,6 @@
 using Azure.Messaging.ServiceBus;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Amqp.Framing;
 using System.Text.Unicode;
 
 namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
@@ -150,13 +151,15 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
         {
             ServiceBusMessageBatch messageBatch = await serviceBusSender.CreateMessageBatchAsync();
 
-            serviceBusMessages.ForEach(message =>
+            foreach (var message in serviceBusMessages)
             {
                 if (!messageBatch.TryAddMessage(message))
                 {
-                    throw new Exception($"Message {message.MessageId} is too large to fit in the batch.");
+                    await serviceBusSender.SendMessagesAsync(messageBatch);
+                    messageBatch = await serviceBusSender.CreateMessageBatchAsync();
+                    messageBatch.TryAddMessage(message);
                 }
-            });
+            }
 
             try
             {

@@ -9,15 +9,19 @@ builder.Services.AddOptionConfig();
 Console.Clear();
 
 // 1
-//builder.Services.AddHostedService<Worker_Product>();
-//builder.Services.AddHostedService<Worker_Batch>();
-builder.Services.AddHostedService<Worker_Schedule>();
-//builder.Services.AddHostedService<Worker_Batch_Processor>();
-//builder.Services.AddHostedService<Worker_Duplicate>();
+//builder.Services.AddHostedService<Worker_Product_001>();
+// builder.Services.AddHostedService<Worker_Duplicate_002>();
+// builder.Services.AddHostedService<Worker_Schedule_003>();
+// builder.Services.AddHostedService<Worker_Simple_Qtd_004>();
+//builder.Services.AddHostedService<Worker_Batch_Normal_005>();
+//builder.Services.AddHostedService<Worker_Batch_Processor_006>();
+
 //builder.Services.AddHostedService<WorkerDLQ>();
 
-// 2
-//builder.Services.AddHostedService<Worker_Processor_Partition>();
+// partition
+builder.Services.AddHostedService<Worker_Processor_Partition>();
+
+//session
 //builder.Services.AddHostedService<Worker_Processor_Partition_Session>();
 
 // Topic

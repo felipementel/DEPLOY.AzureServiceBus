@@ -3,14 +3,14 @@ using DEPLOY.AzureServiceBus.WorkerService.Consumer.Domain;
 
 namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 {
-    public class Worker_Product : BackgroundService
+    public class Worker_Product_001 : BackgroundService
     {
         private readonly string _queueName = "simple-product";
-        private readonly ILogger<Worker_Product> _logger;
+        private readonly ILogger<Worker_Product_001> _logger;
         private readonly ServiceBusClient _serviceBusClient;
 
-        public Worker_Product(
-            ILogger<Worker_Product> logger,
+        public Worker_Product_001(
+            ILogger<Worker_Product_001> logger,
             ServiceBusClient serviceBusClient)
         {
             _logger = logger;
@@ -26,8 +26,7 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
                 if (_logger.IsEnabled(LogLevel.Information))
                 {
                     Console.WriteLine(Environment.NewLine);
-                    _logger.LogInformation($"{_queueName}" + " at: {time}",
-                        DateTimeOffset.Now);
+                    _logger.LogInformation($"{_queueName} at: {DateTimeOffset.Now}");
                     Console.WriteLine(Environment.NewLine);
                 }
 

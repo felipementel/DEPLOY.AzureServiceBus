@@ -23,8 +23,6 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-            bool mustReply = false;
-
             while (!stoppingToken.IsCancellationRequested)
             {
                 //if (_logger.IsEnabled(LogLevel.Information))

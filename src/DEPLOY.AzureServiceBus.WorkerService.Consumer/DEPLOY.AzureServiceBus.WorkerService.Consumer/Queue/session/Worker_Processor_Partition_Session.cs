@@ -4,7 +4,7 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 {
     public class Worker_Processor_Partition_Session : BackgroundService
     {
-        const string queueName = "partition-session";
+        private readonly string _queueName = "partition-session";
         private readonly ILogger<Worker_Processor_Partition_Session> _logger;
         private readonly ServiceBusClient _serviceBusClient;
 
@@ -23,13 +23,12 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
             if (_logger.IsEnabled(LogLevel.Information))
             {
                 Console.WriteLine(Environment.NewLine);
-                _logger.LogInformation("Partition Session at: {time}",
-                    DateTimeOffset.Now);
+                _logger.LogInformation($"{_queueName} at: {DateTimeOffset.Now}");
                 Console.WriteLine(Environment.NewLine);
             }
 
             ServiceBusSessionProcessor processor = _serviceBusClient
-                .CreateSessionProcessor(queueName: queueName, new ServiceBusSessionProcessorOptions
+                .CreateSessionProcessor(queueName: _queueName, new ServiceBusSessionProcessorOptions
                 {
                     AutoCompleteMessages = false,
                     ReceiveMode = ServiceBusReceiveMode.PeekLock,
