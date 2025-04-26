@@ -1,5 +1,3 @@
-using System;
-using System.Threading.Tasks;
 using Azure.Messaging.ServiceBus;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
@@ -18,7 +16,7 @@ namespace DEPLOY.AzureServiceBus.Function.Consumer
         [Function(nameof(ServiceBusQueueConsumer))]
         public async Task Run(
             [ServiceBusTrigger(
-            queueName: "simpleDLQ",
+            queueName: "simple-product/$deadletterqueue",
             AutoCompleteMessages = false,
             Connection = "AzureServiceBus:Queue:Conn1",
             IsBatched = false,

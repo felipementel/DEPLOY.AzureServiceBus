@@ -67,15 +67,20 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
                     if (product_fromBinaryData == null || product_fromBinaryData[0]!.Quantity % 2 == 0)
                     {
                         Console.WriteLine(Environment.NewLine);
+                        Console.WriteLine($"  Even (par) Quantity: {product_fromJson![0]!.Quantity}");
                         Console.WriteLine($"  Delivery Count: {msgReceived.DeliveryCount} , Quantity {product_fromBinaryData![0]!.Quantity}");
                         Console.WriteLine(Environment.NewLine);
 
                         await receiver.AbandonMessageAsync(msgReceived);
+                        Console.WriteLine("Message abandoned.");
                     }
                     else
                     {
+                        Console.WriteLine(Environment.NewLine);
+                        Console.WriteLine($"  Odd (impar) Quantity: {product_fromJson![0]!.Quantity}");
                         await receiver
                             .CompleteMessageAsync(msgReceived);
+                        Console.WriteLine("Message completed.");
                     }
                 }
                 catch (Exception ex)

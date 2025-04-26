@@ -11,6 +11,7 @@ Console.Clear();
 // 1
 //builder.Services.AddHostedService<Worker_Product>();
 //builder.Services.AddHostedService<Worker_Batch>();
+builder.Services.AddHostedService<Worker_Schedule>();
 //builder.Services.AddHostedService<Worker_Batch_Processor>();
 //builder.Services.AddHostedService<Worker_Duplicate>();
 //builder.Services.AddHostedService<WorkerDLQ>();
@@ -20,8 +21,8 @@ Console.Clear();
 //builder.Services.AddHostedService<Worker_Processor_Partition_Session>();
 
 // Topic
-builder.Services.AddHostedService<WorkerCloudEvents>();
-builder.Services.AddHostedService<WorkerCloudEvents2>();
+//builder.Services.AddHostedService<WorkerCloudEvents>();
+//builder.Services.AddHostedService<WorkerCloudEvents2>();
 
 var host = builder.Build();
 
