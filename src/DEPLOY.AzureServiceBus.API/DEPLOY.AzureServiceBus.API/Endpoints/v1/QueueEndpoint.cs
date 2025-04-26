@@ -31,6 +31,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                     ServiceBusSender sender = serviceBusClient.CreateSender($"{simple}-product");
                     await sender.SendMessageAsync(new ServiceBusMessage()
                     {
+                        MessageId = Guid.NewGuid().ToString(),
                         Body = BinaryData.FromObjectAsJson(Util.GenerateData.Products(1)),
                         ContentType = "application/json"
                     }, cancellationToken);
@@ -89,6 +90,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                     ServiceBusSender sender = serviceBusClient.CreateSender($"{simple}-schedule");
                     await sender.ScheduleMessageAsync(new ServiceBusMessage()
                     {
+                        MessageId = Guid.NewGuid().ToString(),
                         Body = BinaryData.FromString(msg),
                         ContentType = "application/json",
                     }, DateTimeOffset.Now.AddSeconds(scheduleInSecconds),
@@ -122,6 +124,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                     {
                         messages.Add(new ServiceBusMessage(BinaryData.FromString($"Canal DEPLOY | MVPConf Blumenau {i}"))
                         {
+                            MessageId = Guid.NewGuid().ToString(),
                             ContentType = "application/text",
                             ReplyTo = "simple-reply",
                         });

@@ -7,8 +7,10 @@ namespace DEPLOY.AzureServiceBus.Function.Consumer
     public class ServiceBusQueueConsumer
     {
         private readonly ILogger<ServiceBusQueueConsumer> _logger;
+        const string _queueName = "simple-product/$deadletterqueue";
 
-        public ServiceBusQueueConsumer(ILogger<ServiceBusQueueConsumer> logger)
+        public ServiceBusQueueConsumer(
+            ILogger<ServiceBusQueueConsumer> logger)
         {
             _logger = logger;
         }
@@ -16,7 +18,7 @@ namespace DEPLOY.AzureServiceBus.Function.Consumer
         [Function(nameof(ServiceBusQueueConsumer))]
         public async Task Run(
             [ServiceBusTrigger(
-            queueName: "simple-product/$deadletterqueue",
+            queueName: _queueName,
             AutoCompleteMessages = false,
             Connection = "AzureServiceBus:Queue:Conn1",
             IsBatched = false,
@@ -24,7 +26,7 @@ namespace DEPLOY.AzureServiceBus.Function.Consumer
             ServiceBusReceivedMessage message,
             ServiceBusMessageActions messageActions)
         {
-            _logger.LogInformation("**** QUEUE ****");
+            _logger.LogInformation($"**** QUEUE {_queueName} ****");
             _logger.LogInformation("Message ID: {id}", message.MessageId);
             _logger.LogInformation("Message Body: {body}", message.Body);
             _logger.LogInformation("Message Content-Type: {contentType}", message.ContentType);

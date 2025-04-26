@@ -4,18 +4,18 @@ using Microsoft.Extensions.Logging;
 
 namespace DEPLOY.AzureServiceBus.Function.Consumer
 {
-    public class ServiceBusQueuePartitionSessionConsumer
+    public class ServiceBusQueueBatchConsumer
     {
-        private readonly ILogger<ServiceBusQueuePartitionSessionConsumer> _logger;
-        const string _queueName = "partition-session/$deadletterqueue";
+        private readonly ILogger<ServiceBusQueueBatchConsumer> _logger;
+        const string _queueName = "simple-batch/$deadletterqueue";
 
-        public ServiceBusQueuePartitionSessionConsumer(
-            ILogger<ServiceBusQueuePartitionSessionConsumer> logger)
+        public ServiceBusQueueBatchConsumer(
+            ILogger<ServiceBusQueueBatchConsumer> logger)
         {
             _logger = logger;
         }
 
-        [Function(nameof(ServiceBusQueuePartitionSessionConsumer))]
+        [Function(nameof(ServiceBusQueueConsumer))]
         public async Task Run(
             [ServiceBusTrigger(
             queueName: _queueName,
@@ -28,7 +28,7 @@ namespace DEPLOY.AzureServiceBus.Function.Consumer
         {
             foreach (var message in messages)
             {
-                _logger.LogInformation($"**** QUEUE {_queueName} ****");
+                _logger.LogInformation("**** QUEUE ****");
                 _logger.LogInformation("Message ID: {id}", message.MessageId);
                 _logger.LogInformation("Message Body: {body}", message.Body);
                 _logger.LogInformation("Message Content-Type: {contentType}", message.ContentType);

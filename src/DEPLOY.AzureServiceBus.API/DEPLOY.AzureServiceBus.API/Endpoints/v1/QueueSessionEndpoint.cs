@@ -35,6 +35,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                         if (i % 2 == 0)
                             await sender.SendMessageAsync(new ServiceBusMessage()
                             {
+                                MessageId = Guid.NewGuid().ToString(),
                                 Body = BinaryData.FromString($"Canal DEPLOY | MVPConf Blumenau {i}"),
                                 ContentType = "application/json",
                                 PartitionKey = "PAR",
@@ -43,6 +44,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                         else
                             await sender.SendMessageAsync(new ServiceBusMessage()
                             {
+                                MessageId = Guid.NewGuid().ToString(),
                                 Body = BinaryData.FromString($"Canal DEPLOY | MVPConf Blumenau {i}"),
                                 ContentType = "application/json",
                                 PartitionKey = "IMPAR",

@@ -44,12 +44,12 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v2
 
                         ServiceBusMessage message = new ServiceBusMessage(new BinaryData(cloudEvent))
                         {
+                            MessageId = Guid.NewGuid().ToString(),
                             ContentType = "application/cloudevents+json",
                             PartitionKey = item.Quantity % 2 == 0 ? "PAR" : "IMPAR",
                             SessionId = item.Quantity % 2 == 0 ? "PAR" : "IMPAR"
                         };
 
-                        // send the message
                         await sender.SendMessageAsync(message);
                     }
 

@@ -33,6 +33,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
 
                     await sender.SendMessageAsync(new ServiceBusMessage()
                     {
+                        MessageId = Guid.NewGuid().ToString(),
                         Body = BinaryData.FromObjectAsJson(product, new System.Text.Json.JsonSerializerOptions()
                         {
                             WriteIndented = true
@@ -72,6 +73,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                         if (product.Quantity % 2 == 0)
                             messagesPAR.Add(new ServiceBusMessage()
                             {
+                                MessageId = Guid.NewGuid().ToString(),
                                 Body = BinaryData.FromObjectAsJson(product),
                                 ContentType = "application/json",
                                 PartitionKey = "PAR"
