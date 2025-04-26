@@ -85,8 +85,8 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                             });
                     });
 
-                    await SendBatch(sender, messagesPAR);
-                    await SendBatch(sender, messagesIMPAR);
+                    await SendBatchAsync(sender, messagesPAR);
+                    await SendBatchAsync(sender, messagesIMPAR);
 
                     return Results.Accepted();
                 })

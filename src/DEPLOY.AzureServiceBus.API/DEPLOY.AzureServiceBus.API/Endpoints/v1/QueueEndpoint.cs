@@ -127,7 +127,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                         });
                     }
 
-                    await SendBatch(sender, messages);
+                    await SendBatchAsync(sender, messages);
 
                     return Results.Accepted();
                 })
@@ -145,7 +145,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                 .WithSummary($"post queue {simple} qtd v1 - Command Create Products");
         }
 
-        public static async Task SendBatch(
+        public static async Task SendBatchAsync(
             ServiceBusSender serviceBusSender,
             List<ServiceBusMessage> serviceBusMessages)
         {
@@ -163,7 +163,10 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
 
             try
             {
-                await serviceBusSender.SendMessagesAsync(messageBatch);
+                if (messageBatch.Count > 0)
+                {
+                    await serviceBusSender.SendMessagesAsync(messageBatch);
+                }                
             }
             catch (ServiceBusException ex)
             {

@@ -98,8 +98,8 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                             });
                     });
 
-                    await SendBatchSession(sender, messagesPAR);
-                    await SendBatchSession(sender, messagesIMPAR);
+                    await SendBatchSessionAsync(sender, messagesPAR);
+                    await SendBatchSessionAsync(sender, messagesIMPAR);
 
                     return Results.Accepted();
                 })
@@ -117,26 +117,33 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                 .WithSummary($"post queue {partition_session} v1");
         }
 
-        private static async Task SendBatchSession(
+        private static async Task SendBatchSessionAsync(
         ServiceBusSender serviceBusSender,
         List<ServiceBusMessage> serviceBusMessages)
         {
             ServiceBusMessageBatch messageBatch = await serviceBusSender.CreateMessageBatchAsync();
 
-            serviceBusMessages.ForEach(message =>
+            foreach (var message in serviceBusMessages)
             {
-                messageBatch.TryAddMessage(
-                new ServiceBusMessage(message.Body)
+                if (!messageBatch.TryAddMessage(message))
                 {
-                    ContentType = message.ContentType,
-                    PartitionKey = message.PartitionKey,
-                    SessionId = message.SessionId
-                });
-            });
+                    await serviceBusSender.SendMessagesAsync(messageBatch);
+                    messageBatch = await serviceBusSender.CreateMessageBatchAsync();
+                    messageBatch.TryAddMessage(new ServiceBusMessage(message.Body)
+                    {
+                        ContentType = message.ContentType,
+                        PartitionKey = message.PartitionKey,
+                        SessionId = message.SessionId
+                    });
+                }
+            }
 
             try
             {
-                await serviceBusSender.SendMessagesAsync(messageBatch);
+                if (messageBatch.Count > 0)
+                {
+                    await serviceBusSender.SendMessagesAsync(messageBatch);
+                }
             }
             catch (ServiceBusException ex)
             {
