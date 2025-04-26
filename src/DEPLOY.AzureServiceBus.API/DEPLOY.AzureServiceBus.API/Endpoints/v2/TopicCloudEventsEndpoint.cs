@@ -35,7 +35,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v2
                     {
                         var cloudEvent = new CloudEvent(
                             "/cloudevents/canal-deploy/source",
-                            "mvpconf.blumenau",
+                            "command.mvpconf.blumenau",
                             item);
 
                         cloudEvent.Subject = "Create-Product";

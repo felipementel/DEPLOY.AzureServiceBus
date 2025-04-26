@@ -25,8 +25,8 @@ builder.Services.AddHostedService<Worker_Processor_Partition>();
 builder.Services.AddHostedService<Worker_Processor_Partition_Session>();
 
 // Topic
-//builder.Services.AddHostedService<WorkerCloudEvents>();
-//builder.Services.AddHostedService<WorkerCloudEvents2>();
+builder.Services.AddHostedService<WorkerCloudEvents>();
+builder.Services.AddHostedService<WorkerCloudEvents2>();
 
 var host = builder.Build();
 
