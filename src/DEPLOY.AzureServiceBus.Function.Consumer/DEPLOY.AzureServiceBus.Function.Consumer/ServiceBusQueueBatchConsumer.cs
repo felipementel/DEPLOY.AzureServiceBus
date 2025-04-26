@@ -15,7 +15,7 @@ namespace DEPLOY.AzureServiceBus.Function.Consumer
             _logger = logger;
         }
 
-        [Function(nameof(ServiceBusQueueConsumer))]
+        [Function(nameof(ServiceBusQueueBatchConsumer))]
         public async Task Run(
             [ServiceBusTrigger(
             queueName: _queueName,
@@ -28,7 +28,7 @@ namespace DEPLOY.AzureServiceBus.Function.Consumer
         {
             foreach (var message in messages)
             {
-                _logger.LogInformation("**** QUEUE ****");
+                _logger.LogInformation($"**** QUEUE {_queueName} ****");
                 _logger.LogInformation("Message ID: {id}", message.MessageId);
                 _logger.LogInformation("Message Body: {body}", message.Body);
                 _logger.LogInformation("Message Content-Type: {contentType}", message.ContentType);
