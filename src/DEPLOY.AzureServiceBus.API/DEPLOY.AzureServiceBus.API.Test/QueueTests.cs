@@ -13,9 +13,9 @@ namespace DEPLOY.AzureServiceBus.API.Test
         private readonly Mock<ServiceBusClient> _mockServiceBusClient;
         private readonly Mock<ServiceBusSender> _mockServiceBusSender;
 
-        public QueueEndpointTests(WebApplicationFactory<Program> factory)
+        public QueueEndpointTests()
         {
-            _factory = factory;
+            _factory = new WebApplicationFactory<Program>();
             _httpClient = _factory.CreateClient();
 
             _mockServiceBusClient = new Mock<ServiceBusClient>();

@@ -2,7 +2,7 @@ using Azure.Messaging.ServiceBus;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
-namespace DEPLOY.AzureServiceBus.Function.Consumer
+namespace DEPLOY.AzureServiceBus.Function.Consumer.Queue
 {
     public class ServiceBusQueueBatchConsumer
     {

@@ -7,6 +7,8 @@ namespace DEPLOY.AzureServiceBus.Function.Consumer.Topic
     public class ServiceBusTopicConsumer
     {
         private readonly ILogger<ServiceBusTopicConsumer> _logger;
+        const string _topicName = "simple-batch/$deadletterqueue";
+        const string _subcriberName = "client-1";
 
         public ServiceBusTopicConsumer(ILogger<ServiceBusTopicConsumer> logger)
         {
@@ -16,8 +18,8 @@ namespace DEPLOY.AzureServiceBus.Function.Consumer.Topic
         [Function(nameof(ServiceBusTopicConsumer))]
         public async Task Run(
             [ServiceBusTrigger(
-            topicName: "deploy-sem-particao",
-            subscriptionName: "cliente-1",
+            topicName: _topicName,
+            subscriptionName: _subcriberName,
             AutoCompleteMessages =false,
             Connection = "AzureServiceBus:Topic:ConnectionString",
             IsBatched = false,
