@@ -71,7 +71,7 @@ jobs:
       msg-canal-deploy: ${{ inputs.msg-canal-deploy }}
       dotnetVersion: ${{ vars.DOTNETVERSION }}
       projectBaseDir: ${{ vars.PROJECTBASEDIR }}
-      sln: ${{ vars.SLN }}
+      solutionFileName: ${{ vars.solutionFileName }}
       mainProject: ${{ vars.MAINPROJECT }}
       reportTitle: ${{ vars.REPORTTITLE }}
       sonarExclusions: ${{ vars.SONAREXCLUSIONS || ''}}
