@@ -14,6 +14,8 @@ on:
       - 'docker/**'
       - 'docs/**'
       - 'src/**/_requests/**'
+      - 'src/DEPLOY.AzureServiceBus.Function.Consumer/**'
+      - 'src/DEPLOY.AzureServiceBus.Worker.Consumer/**'
   workflow_dispatch:
     inputs:
       build-mode:
