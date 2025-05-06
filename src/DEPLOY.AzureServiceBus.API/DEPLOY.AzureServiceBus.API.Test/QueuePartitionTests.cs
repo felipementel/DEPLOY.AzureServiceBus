@@ -1,4 +1,5 @@
-﻿using Azure.Messaging.ServiceBus;
+﻿using System.Net;
+using Azure.Messaging.ServiceBus;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Moq;
@@ -40,7 +41,8 @@ namespace DEPLOY.AzureServiceBus.API.Test
             var response = await _httpClient.PostAsync("/api/v1/queue-partition/partition/batch/5", null);
 
             // Assert
-            Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
+            //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
 
             // Ideally verify that the correct sender was created and messages were sent
             // These verifications would work with proper DI setup for testing
@@ -78,7 +80,8 @@ namespace DEPLOY.AzureServiceBus.API.Test
             var response = await _httpClient.PostAsync("/api/v1/queue-partition/partition/batch/5", null);
 
             // Assert
-            Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
+            //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
         }
     }
 }

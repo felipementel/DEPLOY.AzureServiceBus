@@ -1,4 +1,5 @@
-﻿using Azure.Messaging.ServiceBus;
+﻿using System.Net;
+using Azure.Messaging.ServiceBus;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Moq;
@@ -40,7 +41,8 @@ namespace DEPLOY.AzureServiceBus.API.Test
             var response = await _httpClient.PostAsync("/api/v1/queue/simple", null);
 
             // Assert
-            Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
+            //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
             //mockServiceBusClient.Verify(client => client.CreateSender("simple"), Times.Once);
             //mockServiceBusSender.Verify(sender => sender.SendMessageAsync(It.IsAny<ServiceBusMessage>(), It.IsAny<CancellationToken>()), Times.Once);
         }
