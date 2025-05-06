@@ -68,7 +68,7 @@ jobs:
       environment: ${{ inputs.environment }}
       gitLeaks: ${{ inputs.gitLeaks }}
       sonarQube: ${{ inputs.sonar-qube }}
-      unitTests: ${{ inputs.unit-tests }}
+      unitTests: ${{ inputs.unitTests }}
       snyk: ${{ inputs.snyk }}
       msgCanalDeploy: ${{ inputs.msgCanalDeploy }}
       dotnetVersion: ${{ vars.DOTNETVERSION }}
