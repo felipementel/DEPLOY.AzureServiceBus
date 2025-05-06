@@ -70,7 +70,7 @@ jobs:
       sonarQube: ${{ inputs.sonar-qube }}
       unitTests: ${{ inputs.unit-tests }}
       snyk: ${{ inputs.snyk }}
-      msgCanalDeploy: ${{ inputs.msg-canal-deploy }}
+      msgCanalDeploy: ${{ inputs.msgCanalDeploy }}
       dotnetVersion: ${{ vars.DOTNETVERSION }}
       projectBaseDir: ${{ vars.PROJECTBASEDIR }}
       solutionFileName: ${{ vars.SOLUTIONFILENAME }}
