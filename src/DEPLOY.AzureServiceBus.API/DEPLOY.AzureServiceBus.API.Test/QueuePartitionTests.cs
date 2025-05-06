@@ -13,9 +13,9 @@ namespace DEPLOY.AzureServiceBus.API.Test
         private readonly Mock<ServiceBusClient> _mockServiceBusClient;
         private readonly Mock<ServiceBusSender> _mockServiceBusSender;
 
-        public QueuePartitionTests(WebApplicationFactory<Program> factory)
+        public QueuePartitionTests()
         {
-            _factory = factory;
+            _factory = new WebApplicationFactory<Program>();
             _httpClient = _factory.CreateClient();
 
             _mockServiceBusClient = new Mock<ServiceBusClient>();
@@ -46,8 +46,8 @@ namespace DEPLOY.AzureServiceBus.API.Test
             // These verifications would work with proper DI setup for testing
             // mockServiceBusClient.Verify(client => client.CreateSender("partition"), Times.Once);
             // mockServiceBusSender.Verify(sender => sender.SendMessageAsync(
-            //    It.Is<ServiceBusMessage>(msg => msg.ContentType == "application/text"), 
-            //    It.IsAny<CancellationToken>()), 
+            //    It.Is<ServiceBusMessage>(msg => msg.ContentType == "application/text"),
+            //    It.IsAny<CancellationToken>()),
             //    Times.Once);
         }
 
