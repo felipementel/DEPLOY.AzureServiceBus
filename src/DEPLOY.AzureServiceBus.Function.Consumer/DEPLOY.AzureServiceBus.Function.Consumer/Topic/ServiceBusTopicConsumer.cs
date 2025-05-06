@@ -8,7 +8,7 @@ namespace DEPLOY.AzureServiceBus.Function.Consumer.Topic
     {
         private readonly ILogger<ServiceBusTopicConsumer> _logger;
         const string _topicName = "simple-batch/$deadletterqueue";
-        const string _subcriberName = "client-1";
+        const string _subscriberName = "client-1";
 
         public ServiceBusTopicConsumer(ILogger<ServiceBusTopicConsumer> logger)
         {
