@@ -64,7 +64,7 @@ jobs:
       packages: write # Necessário para o job push-image publicar a imagem Docker no GitHub Packages (ghcr.io)
       security-events: write # Necessário para fazer upload de resultados do Snyk ou Gitleaks para o GitHub Code Scanning/Security
     with:
-      buildMode: ${{ inputs.build-mode }}
+      buildMode: ${{ inputs.buildMode }}
       environment: ${{ inputs.environment }}
       gitLeaks: ${{ inputs.git-leaks }}
       sonarQube: ${{ inputs.sonar-qube }}
