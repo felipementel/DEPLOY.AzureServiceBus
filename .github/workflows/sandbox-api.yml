@@ -18,7 +18,7 @@ on:
       - 'src/DEPLOY.AzureServiceBus.Worker.Consumer/**'
   workflow_dispatch:
     inputs:
-      build-mode:
+      buildMode:
         description: "Qual ação deseja fazer?"
         required: false
         default: Build
@@ -30,17 +30,17 @@ on:
         description: 'Qual ambiente deseja fazer o deploy?'
         required: true
         type: environment
-      git-leaks:
+      gitLeaks:
         type: boolean
         description: 'Run GitLeaks'
         required: false
         default: true
-      sonar-qube:
+      sonarQube:
         type: boolean
         description: 'Run SonarQube'
         required: false
         default: true
-      unit-tests:
+      unitTests:
         type: boolean
         description: 'Run Unit Tests'
         required: false
@@ -50,7 +50,7 @@ on:
         description: 'Snyk.io'
         required: false
         default: true
-      msg-canal-deploy:
+      msgCanalDeploy:
         type: string
         description: 'Message to be displayed in the summary'
         required: false
@@ -64,13 +64,13 @@ jobs:
       packages: write # Necessário para o job push-image publicar a imagem Docker no GitHub Packages (ghcr.io)
       security-events: write # Necessário para fazer upload de resultados do Snyk ou Gitleaks para o GitHub Code Scanning/Security
     with:
-      build-mode: ${{ inputs.build-mode }}
+      buildMode: ${{ inputs.buildMode }}
       environment: ${{ inputs.environment }}
-      git-leaks: ${{ inputs.git-leaks }}
-      sonar-qube: ${{ inputs.sonar-qube }}
-      unit-tests: ${{ inputs.unit-tests }}
+      gitLeaks: ${{ inputs.gitLeaks }}
+      sonarQube: ${{ inputs.sonarQube }}
+      unitTests: ${{ inputs.unitTests }}
       snyk: ${{ inputs.snyk }}
-      msg-canal-deploy: ${{ inputs.msg-canal-deploy }}
+      msgCanalDeploy: ${{ inputs.msgCanalDeploy }}
       dotnetVersion: ${{ vars.DOTNETVERSION }}
       projectBaseDir: ${{ vars.PROJECTBASEDIR }}
       solutionFileName: ${{ vars.SOLUTIONFILENAME }}
@@ -78,5 +78,6 @@ jobs:
       reportTitle: ${{ vars.REPORTTITLE }}
       sonarExclusions: ${{ vars.SONAREXCLUSIONS || ''}}
       imageName: ${{ vars.IMAGENAME }}-sandbox
+      openAPIFolder: "open-api"
     secrets:
       inherit
