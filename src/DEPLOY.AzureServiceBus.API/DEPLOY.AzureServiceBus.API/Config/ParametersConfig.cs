@@ -2,7 +2,7 @@
 {
     public class ParametersConfig
     {
-        public required AzureServiceBus AzureServiceBus { get; set; }
+        public AzureServiceBus AzureServiceBus { get; set; }
     }
 
     public class AzureServiceBus

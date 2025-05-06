@@ -1,8 +1,10 @@
-﻿using System.Net;
-using Azure.Messaging.ServiceBus;
-using Microsoft.AspNetCore.Http;
+﻿using Azure.Messaging.ServiceBus;
+using DEPLOY.AzureServiceBus.API.Config;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Moq;
+using System.Net;
 using Xunit;
 
 namespace DEPLOY.AzureServiceBus.API.Test
@@ -16,7 +18,24 @@ namespace DEPLOY.AzureServiceBus.API.Test
 
         public QueueSessionTests()
         {
-            _factory = new WebApplicationFactory<Program>();
+            ParametersConfig config = new ParametersConfig();
+            config.AzureServiceBus = new Config.AzureServiceBus();
+            config.AzureServiceBus.ConnectionString = "Endpoint=sb://localhost;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;";
+
+            var MockIOptions = new Mock<IOptions<ParametersConfig>>();
+            MockIOptions.Setup(x => x.Value).Returns(config);
+
+            _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureServices(services =>
+                {
+                    services.AddScoped<IOptions<ParametersConfig>>(sp =>
+                    {
+                        return MockIOptions.Object;
+                    });
+                });
+            });
+
             _httpClient = _factory.CreateClient();
 
             _mockServiceBusClient = new Mock<ServiceBusClient>();
