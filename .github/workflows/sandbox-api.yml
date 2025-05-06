@@ -67,7 +67,7 @@ jobs:
       buildMode: ${{ inputs.buildMode }}
       environment: ${{ inputs.environment }}
       gitLeaks: ${{ inputs.gitLeaks }}
-      sonarQube: ${{ inputs.sonar-qube }}
+      sonarQube: ${{ inputs.sonarQube }}
       unitTests: ${{ inputs.unitTests }}
       snyk: ${{ inputs.snyk }}
       msgCanalDeploy: ${{ inputs.msgCanalDeploy }}
