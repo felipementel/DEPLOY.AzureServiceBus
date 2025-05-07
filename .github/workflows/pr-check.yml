@@ -22,6 +22,7 @@ jobs:
       environment: 'DEV'
       gitLeaks: true
       sonarQube: true
+      testsFolder: './tests'
       unitTests: true
       snyk: true
       msgCanalDeploy: 'PR Check - Canal DEPLOY'
