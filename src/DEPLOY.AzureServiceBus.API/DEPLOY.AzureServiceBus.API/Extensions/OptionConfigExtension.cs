@@ -14,7 +14,7 @@ namespace DEPLOY.AzureServiceBus.API.Extensions
                 {
                     if (config is null || config.AzureServiceBus is null || config.AzureServiceBus.ConnectionString is null)
                     {
-                        throw new Exception("Azure Service Bus is not configured.");
+                        throw new Exception("Azure Service Bus is not configured");
                     }
                     return true;
                 });
