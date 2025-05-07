@@ -1,6 +1,8 @@
 ﻿using Azure.Messaging.ServiceBus;
 using DEPLOY.AzureServiceBus.API.Config;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -16,16 +18,19 @@ namespace DEPLOY.AzureServiceBus.API.Test
         private readonly Mock<ServiceBusClient> _mockServiceBusClient;
         private readonly Mock<ServiceBusSender> _mockServiceBusSender;
 
-        public QueuePartitionTests()
+        public QueuePartitionTests(WebApplicationFactory<Program> factory)
         {
             ParametersConfig config = new ParametersConfig();
             config.AzureServiceBus = new Config.AzureServiceBus();
-            config.AzureServiceBus.ConnectionString = "Endpoint=sb://localhost;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;";
+            config.AzureServiceBus.ConnectionString = "Endpoint=sb://127.0.0.1;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;";
 
             var MockIOptions = new Mock<IOptions<ParametersConfig>>();
             MockIOptions.Setup(x => x.Value).Returns(config);
 
-            _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+            _mockServiceBusClient = new Mock<ServiceBusClient>();
+            _mockServiceBusSender = new Mock<ServiceBusSender>();
+
+            _factory = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureServices(services =>
                 {
@@ -34,12 +39,17 @@ namespace DEPLOY.AzureServiceBus.API.Test
                         return MockIOptions.Object;
                     });
                 });
+
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton(_mockServiceBusClient.Object);
+                    services.AddSingleton(_mockServiceBusSender.Object);
+                });
+
+                builder.UseEnvironment("Development");
             });
 
             _httpClient = _factory.CreateClient();
-
-            _mockServiceBusClient = new Mock<ServiceBusClient>();
-            _mockServiceBusSender = new Mock<ServiceBusSender>();
         }
 
         [Fact]
@@ -50,11 +60,17 @@ namespace DEPLOY.AzureServiceBus.API.Test
                 .Setup(client => client.CreateSender(It.IsAny<string>()))
                 .Returns(_mockServiceBusSender.Object);
 
+            // Simulação do ServiceBusMessageBatch usando a factory
+            List<ServiceBusMessage> backingList = new();
+            ServiceBusMessageBatch mockBatch = ServiceBusModelFactory.ServiceBusMessageBatch(
+                batchSizeBytes: 10000,  // Tamanho arbitrário grande o suficiente
+                batchMessageStore: backingList,
+                batchOptions: new CreateMessageBatchOptions(),
+                tryAddCallback: message => true);  // Sempre aceita adicionar mensagens
+
             _mockServiceBusSender
-                .Setup(sender => sender.SendMessageAsync(
-                    It.IsAny<ServiceBusMessage>(),
-                    It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
+                .Setup(sender => sender.CreateMessageBatchAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockBatch);
 
             // Act
             var response = await _httpClient.PostAsync("/api/v1/queue-partition/partition/batch/5", null);
@@ -76,8 +92,6 @@ namespace DEPLOY.AzureServiceBus.API.Test
         public async Task PostPartitionQueueBatch_WithQtd_ReturnsAccepted()
         {
             // Arrange
-            var mockMessageBatch = new Mock<ServiceBusMessageBatchWrapper>();
-
             _mockServiceBusClient
                 .Setup(client => client.CreateSender(It.IsAny<string>()))
                 .Returns(_mockServiceBusSender.Object);
@@ -85,15 +99,16 @@ namespace DEPLOY.AzureServiceBus.API.Test
             _mockServiceBusSender
                 .Setup(sender => sender.CreateMessageBatchAsync(It.IsAny<CancellationToken>()));
 
-            mockMessageBatch
-                .Setup(batch => batch.TryAddMessage(It.IsAny<ServiceBusMessage>()))
-                .Returns(true);
+            List<ServiceBusMessage> backingList = new();
+            ServiceBusMessageBatch mockBatch = ServiceBusModelFactory.ServiceBusMessageBatch(
+                batchSizeBytes: 10000,  // Tamanho arbitrário grande o suficiente
+                batchMessageStore: backingList,
+                batchOptions: new CreateMessageBatchOptions(),
+                tryAddCallback: message => true);  // Sempre aceita adicionar mensagens
 
             _mockServiceBusSender
-                .Setup(sender => sender.SendMessagesAsync(
-                    It.IsAny<ServiceBusMessageBatch>(),
-                    It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
+                .Setup(sender => sender.CreateMessageBatchAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockBatch);
 
             // Act
             var response = await _httpClient.PostAsync("/api/v1/queue-partition/partition/batch/5", null);

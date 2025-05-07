@@ -1,6 +1,8 @@
 ﻿using Azure.Messaging.ServiceBus;
 using DEPLOY.AzureServiceBus.API.Config;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Moq;
@@ -20,10 +22,13 @@ namespace DEPLOY.AzureServiceBus.API.Test
         {
             ParametersConfig config = new ParametersConfig();
             config.AzureServiceBus = new Config.AzureServiceBus();
-            config.AzureServiceBus.ConnectionString = "Endpoint=sb://localhost;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;";
+            config.AzureServiceBus.ConnectionString = "Endpoint=sb://127.0.0.1;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;";
 
             var MockIOptions = new Mock<IOptions<ParametersConfig>>();
             MockIOptions.Setup(x => x.Value).Returns(config);
+
+            _mockServiceBusClient = new Mock<ServiceBusClient>();
+            _mockServiceBusSender = new Mock<ServiceBusSender>();
 
             _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
             {
@@ -34,12 +39,17 @@ namespace DEPLOY.AzureServiceBus.API.Test
                         return MockIOptions.Object;
                     });
                 });
+
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton(_mockServiceBusClient.Object);
+                    services.AddSingleton(_mockServiceBusSender.Object);
+                });
+
+                builder.UseEnvironment("Development");
             });
 
             _httpClient = _factory.CreateClient();
-
-            _mockServiceBusClient = new Mock<ServiceBusClient>();
-            _mockServiceBusSender = new Mock<ServiceBusSender>();
         }
 
         [Theory]
@@ -49,7 +59,6 @@ namespace DEPLOY.AzureServiceBus.API.Test
         public async Task PostPartitionSessionQueue_ReturnsAccepted(int qtd)
         {
             // Arrange
-
             _mockServiceBusClient
                 .Setup(client => client.CreateSender(It.IsAny<string>()))
                 .Returns(_mockServiceBusSender.Object);
