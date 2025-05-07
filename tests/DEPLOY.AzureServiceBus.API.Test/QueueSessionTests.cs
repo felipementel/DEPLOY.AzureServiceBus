@@ -1,7 +1,12 @@
 ﻿using Azure.Messaging.ServiceBus;
-using Microsoft.AspNetCore.Http;
+using DEPLOY.AzureServiceBus.API.Config;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Moq;
+using System.Net;
 using Xunit;
 
 namespace DEPLOY.AzureServiceBus.API.Test
@@ -15,11 +20,36 @@ namespace DEPLOY.AzureServiceBus.API.Test
 
         public QueueSessionTests()
         {
-            _factory = new WebApplicationFactory<Program>();
-            _httpClient = _factory.CreateClient();
+            ParametersConfig config = new ParametersConfig();
+            config.AzureServiceBus = new Config.AzureServiceBus();
+            config.AzureServiceBus.ConnectionString = "Endpoint=sb://127.0.0.1;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;";
+
+            var MockIOptions = new Mock<IOptions<ParametersConfig>>();
+            MockIOptions.Setup(x => x.Value).Returns(config);
 
             _mockServiceBusClient = new Mock<ServiceBusClient>();
             _mockServiceBusSender = new Mock<ServiceBusSender>();
+
+            _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+            {
+                builder.ConfigureServices(services =>
+                {
+                    services.AddScoped<IOptions<ParametersConfig>>(sp =>
+                    {
+                        return MockIOptions.Object;
+                    });
+                });
+
+                builder.ConfigureTestServices(services =>
+                {
+                    services.AddSingleton(_mockServiceBusClient.Object);
+                    services.AddSingleton(_mockServiceBusSender.Object);
+                });
+
+                builder.UseEnvironment("Development");
+            });
+
+            _httpClient = _factory.CreateClient();
         }
 
         [Theory]
@@ -29,7 +59,6 @@ namespace DEPLOY.AzureServiceBus.API.Test
         public async Task PostPartitionSessionQueue_ReturnsAccepted(int qtd)
         {
             // Arrange
-
             _mockServiceBusClient
                 .Setup(client => client.CreateSender(It.IsAny<string>()))
                 .Returns(_mockServiceBusSender.Object);
@@ -44,7 +73,8 @@ namespace DEPLOY.AzureServiceBus.API.Test
             var response = await _httpClient.PostAsync($"api/v1/queue-partition-session/partition-session/{qtd}", null);
 
             // Assert
-            Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
+            //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
         }
 
         [Theory]
@@ -82,7 +112,8 @@ namespace DEPLOY.AzureServiceBus.API.Test
             var response = await _httpClient.PostAsync($"/api/v1/queue-partition-session/partition-session/batch/{qtd}", null);
 
             // Assert
-            Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
+            //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
 
             //_mockServiceBusSender
             //    .Verify(sender => sender.SendMessagesAsync(
