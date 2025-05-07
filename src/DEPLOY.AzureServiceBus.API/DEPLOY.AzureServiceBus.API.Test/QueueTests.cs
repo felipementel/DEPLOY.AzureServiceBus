@@ -1,5 +1,6 @@
 ﻿using Azure.Messaging.ServiceBus;
 using DEPLOY.AzureServiceBus.API.Config;
+using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -21,15 +22,21 @@ namespace DEPLOY.AzureServiceBus.API.Test
         public QueueEndpointTests()
         {
             _serviceBusContainer = new ServiceBusBuilder()
+            //#if RUN_LOCAL
+            //   .WithDockerEndpoint("tcp://localhost:2375")
+            //#endif
               .WithImage("mcr.microsoft.com/azure-messaging/servicebus-emulator:latest")
-              .WithEnvironment("ACCEPT_EULA", "Y") // <- Aceita a licença
-                .WithPortBinding(5672, 5672) // ou qualquer porta exposta pelo emulador
-                .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5672))
-                .Build();
+              .WithAcceptLicenseAgreement(true)
+              .WithCleanUp(true)
+              .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5672))
+              .WithPortBinding(5672, 5672)
+              .Build();
 
             ParametersConfig config = new ParametersConfig();
             config.AzureServiceBus = new Config.AzureServiceBus();
-            config.AzureServiceBus.ConnectionString = "Endpoint=sb://localhost;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;";
+            config.AzureServiceBus.ConnectionString = _serviceBusContainer.GetConnectionString();
+                //"Endpoint=sb://localhost;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=localKey;UseDevelopmentEmulator=true;";
+                //"Endpoint=sb://localhost;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;";
 
             IOptions<ParametersConfig> MockOptions = Options.Create<ParametersConfig>(config);
 
@@ -54,8 +61,8 @@ namespace DEPLOY.AzureServiceBus.API.Test
         public async Task PostSimpleQueue_ReturnsAccepted()
         {
             try
-            {                
-                await _serviceBusContainer.StartAsync();
+            {
+                //await _serviceBusContainer.StartAsync();
 
                 // Arrange
                 _mockServiceBusClient

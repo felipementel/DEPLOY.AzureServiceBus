@@ -8,6 +8,10 @@
 		<PreserveCompilationContext>true</PreserveCompilationContext>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(COMPUTERNAME)' != ''">
+		<DefineConstants>$(DefineConstants);RUN_LOCAL</DefineConstants>
+	</PropertyGroup>
+
 	<ItemGroup>
 	  <Compile Remove="AzureServiceBusConfigExtensionTests.cs" />
 	  <Compile Remove="QueuePartitionTests.cs" />
