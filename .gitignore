@@ -8,7 +8,7 @@
 /docker/data/*
 /docker/.env
 src/**/open-api/
-.sonar/*
+.sonar*/*
 coveragereport/
 
 # User-specific files
