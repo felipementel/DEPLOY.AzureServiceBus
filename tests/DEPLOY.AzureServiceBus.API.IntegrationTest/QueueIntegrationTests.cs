@@ -70,7 +70,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
         {
             await _serviceBusContainer.StartAsync();
 
-            //var string2 = _serviceBusContainer.GetConnectionString();
+             //var string2 = _serviceBusContainer.GetConnectionString();
             
             // Arrange
             _ServiceBusClient.CreateSender("simple-product");
