@@ -28,12 +28,12 @@ namespace DEPLOY.AzureServiceBus.API.Test
             //#if RUN_LOCAL
             //   .WithDockerEndpoint("tcp://localhost:2375")
             //#endif
-              .WithImage("mcr.microsoft.com/azure-messaging/servicebus-emulator:latest")
-              .WithAcceptLicenseAgreement(true)
-              //.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5672))
-              .WithBindMount(configFile, "/ServiceBus_Emulator/ConfigFiles/Config.json")
-              .WithPortBinding(5672, 5672)
-              .Build();
+            .WithImage("mcr.microsoft.com/azure-messaging/servicebus-emulator:latest")
+            .WithAcceptLicenseAgreement(true)
+            //.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5672))
+            .WithBindMount(configFile, "/ServiceBus_Emulator/ConfigFiles/Config.json")
+            .WithPortBinding(5672, 5672)
+            .Build();
 
             ParametersConfig config = new ParametersConfig();
             config.AzureServiceBus = new Config.AzureServiceBus();
@@ -70,8 +70,8 @@ namespace DEPLOY.AzureServiceBus.API.Test
         {
             await _serviceBusContainer.StartAsync();
 
-             //var string2 = _serviceBusContainer.GetConnectionString();
-            
+            //var string2 = _serviceBusContainer.GetConnectionString();
+
             // Arrange
             _ServiceBusClient.CreateSender("simple-product");
 

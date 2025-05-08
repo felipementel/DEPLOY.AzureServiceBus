@@ -8,7 +8,8 @@
 /docker/data/*
 /docker/.env
 src/**/open-api/
-
+.sonar/*
+coveragereport/
 
 # User-specific files
 *.rsuser
