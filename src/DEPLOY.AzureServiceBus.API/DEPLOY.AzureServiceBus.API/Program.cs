@@ -1,6 +1,7 @@
 using DEPLOY.AzureServiceBus.API.Endpoints.v1;
 using DEPLOY.AzureServiceBus.API.Endpoints.v2;
 using DEPLOY.AzureServiceBus.API.Extensions;
+using System.Diagnostics.CodeAnalysis;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,4 +32,5 @@ app.MapTopicsCloudEventsEndpointsV2();
 
 await app.RunAsync();
 
+[ExcludeFromCodeCoverage]
 public partial class Program { }
