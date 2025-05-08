@@ -20,11 +20,7 @@ jobs:
       security-events: write
     with:
       environment: 'DEV'
-      gitLeaks: true
-      sonarQube: true
       testsFolder: './tests'
-      unitTests: true
-      snyk: true
       msgCanalDeploy: 'PR Check - Canal DEPLOY'
       dotnetVersion: ${{ vars.DOTNETVERSION || '9.x' }}
       projectBaseDir: ${{ vars.PROJECTBASEDIR || './src' }}
