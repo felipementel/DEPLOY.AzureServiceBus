@@ -1,4 +1,4 @@
-﻿using Azure.Messaging.ServiceBus;
+using Azure.Messaging.ServiceBus;
 using DEPLOY.AzureServiceBus.API.Config;
 using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -20,21 +20,23 @@ namespace DEPLOY.AzureServiceBus.API.Test
         private readonly ServiceBusSender _ServiceBusSender;
         private readonly ServiceBusContainer _serviceBusContainer;
 
-        public QueueIntegrationTests()
+        public QueueIntegrationTests(WebApplicationFactory<Program> factory)
         {
+            var configFile = Path.Combine(Directory.GetCurrentDirectory(), "Config.json");
+
             _serviceBusContainer = new ServiceBusBuilder()
             //#if RUN_LOCAL
             //   .WithDockerEndpoint("tcp://localhost:2375")
             //#endif
-              .WithImage("mcr.microsoft.com/azure-messaging/servicebus-emulator:latest")
-              .WithAcceptLicenseAgreement(true)
-              .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5672))
-              .WithPortBinding(5672, 5672)
-              .Build();
+            .WithImage("mcr.microsoft.com/azure-messaging/servicebus-emulator:latest")
+            .WithAcceptLicenseAgreement(true)
+            .WithBindMount(configFile, "/ServiceBus_Emulator/ConfigFiles/Config.json")
+            .WithPortBinding(5672, 5672)
+            .Build();
 
             ParametersConfig config = new ParametersConfig();
             config.AzureServiceBus = new Config.AzureServiceBus();
-            config.AzureServiceBus.ConnectionString = _serviceBusContainer.GetConnectionString();
+            config.AzureServiceBus.ConnectionString = "Endpoint=amqp://127.0.0.1:5672/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true";
 
             Console.Write(config.AzureServiceBus.ConnectionString);
 
@@ -42,7 +44,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
 
             _ServiceBusClient = new ServiceBusClient(config.AzureServiceBus.ConnectionString);
 
-            _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+            _factory = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureServices(services =>
                 {
@@ -56,7 +58,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
 
                         });
                     });
-                });             
+                });
             });
 
             _httpClient = _factory.CreateClient();
@@ -66,6 +68,8 @@ namespace DEPLOY.AzureServiceBus.API.Test
         public async Task PostSimpleQueue_ReturnsAccepted()
         {
             await _serviceBusContainer.StartAsync();
+
+            //var string2 = _serviceBusContainer.GetConnectionString();
 
             // Arrange
             _ServiceBusClient.CreateSender("simple-product");

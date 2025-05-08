@@ -16,6 +16,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+		<Content Include="Config.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.19.0" />
 		<PackageReference Include="coverlet.collector" Version="6.0.4">
 			<PrivateAssets>all</PrivateAssets>
@@ -37,7 +43,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\..\src\DEPLOY.AzureServiceBus.API\DEPLOY.AzureServiceBus.API\DEPLOY.AzureServiceBus.API.csproj" />
+		<ProjectReference Include="..\..\src\DEPLOY.AzureServiceBus.API\DEPLOY.AzureServiceBus.API\DEPLOY.AzureServiceBus.API.csproj" />
 	</ItemGroup>
 
 </Project>
