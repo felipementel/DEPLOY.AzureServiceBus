@@ -20,7 +20,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
         private readonly ServiceBusSender _ServiceBusSender;
         private readonly ServiceBusContainer _serviceBusContainer;
 
-        public QueueIntegrationTests()
+        public QueueIntegrationTests(WebApplicationFactory<Program> factory)
         {
 
             var configFile = Path.Combine(Directory.GetCurrentDirectory(), "Config.json");
@@ -46,7 +46,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
 
             _ServiceBusClient = new ServiceBusClient(config.AzureServiceBus.ConnectionString);
 
-            _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+            _factory = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureServices(services =>
                 {
