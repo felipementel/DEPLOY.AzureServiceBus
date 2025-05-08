@@ -22,6 +22,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
 
         public QueueIntegrationTests()
         {
+
             var configFile = Path.Combine(Directory.GetCurrentDirectory(), "Config.json");
 
             _serviceBusContainer = new ServiceBusBuilder()
