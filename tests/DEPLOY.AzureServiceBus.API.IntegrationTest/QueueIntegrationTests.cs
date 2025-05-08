@@ -75,7 +75,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
             _ServiceBusClient.CreateSender("simple-product");
 
             // Act
-            var response = await _httpClient.PostAsync("/api/v1/queue/simple", null);
+            var response = await _httpClient.PostAsync("/api/v1/queues/simple", null);
 
             // Assert
             Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
