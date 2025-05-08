@@ -31,7 +31,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
             //#endif
             .WithImage("mcr.microsoft.com/azure-messaging/servicebus-emulator:latest")
             .WithAcceptLicenseAgreement(true)
-            //.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5672))
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5672))
             .WithBindMount(configFile, "/ServiceBus_Emulator/ConfigFiles/Config.json")
             .WithPortBinding(5672, 5672)
             .Build();
