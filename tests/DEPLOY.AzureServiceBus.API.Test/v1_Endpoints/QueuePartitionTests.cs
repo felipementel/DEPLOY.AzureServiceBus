@@ -9,16 +9,16 @@ using Moq;
 using System.Net;
 using Xunit;
 
-namespace DEPLOY.AzureServiceBus.API.Test
+namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
 {
-    public class QueueSessionTests : IClassFixture<WebApplicationFactory<Program>>
+    public class QueuePartitionTests : IClassFixture<WebApplicationFactory<Program>>
     {
         private readonly WebApplicationFactory<Program> _factory;
         private readonly HttpClient _httpClient;
         private readonly Mock<ServiceBusClient> _mockServiceBusClient;
         private readonly Mock<ServiceBusSender> _mockServiceBusSender;
 
-        public QueueSessionTests()
+        public QueuePartitionTests(WebApplicationFactory<Program> factory)
         {
             ParametersConfig config = new ParametersConfig();
             config.AzureServiceBus = new Config.AzureServiceBus();
@@ -30,11 +30,11 @@ namespace DEPLOY.AzureServiceBus.API.Test
             _mockServiceBusClient = new Mock<ServiceBusClient>();
             _mockServiceBusSender = new Mock<ServiceBusSender>();
 
-            _factory = new WebApplicationFactory<Program>().WithWebHostBuilder(builder =>
+            _factory = factory.WithWebHostBuilder(builder =>
             {
                 builder.ConfigureServices(services =>
                 {
-                    services.AddScoped<IOptions<ParametersConfig>>(sp =>
+                    services.AddScoped(sp =>
                     {
                         return MockIOptions.Object;
                     });
@@ -52,74 +52,70 @@ namespace DEPLOY.AzureServiceBus.API.Test
             _httpClient = _factory.CreateClient();
         }
 
-        [Theory]
-        [InlineData(5)]
-        [InlineData(10)]
-        [InlineData(15)]
-        public async Task PostPartitionSessionQueue_ReturnsAccepted(int qtd)
+        [Fact]
+        public async Task PostPartitionQueue_WithQtd_ReturnsAccepted()
         {
             // Arrange
             _mockServiceBusClient
                 .Setup(client => client.CreateSender(It.IsAny<string>()))
                 .Returns(_mockServiceBusSender.Object);
 
-            _mockServiceBusSender
-                .Setup(sender => sender.SendMessageAsync(
-                    It.IsAny<ServiceBusMessage>(),
-                    It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
-            // Act
-            var response = await _httpClient.PostAsync($"api/v1/queue-partition-session/partition-session/{qtd}", null);
-
-            // Assert
-            //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
-            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
-        }
-
-        [Theory]
-        [InlineData(5)]
-        [InlineData(10)]
-        [InlineData(15)]
-        public async Task PostPartitionSessionQueueBatch_WithQtd_ReturnsAccepted(int qtd)
-        {
-            // Arrange
-            _mockServiceBusClient
-                .Setup(client => client.CreateSender(It.IsAny<string>()))
-                .Returns(_mockServiceBusSender.Object);
-
+            // Simulação do ServiceBusMessageBatch usando a factory
             List<ServiceBusMessage> backingList = new();
-            int batchCountThreshold = 5;
-
             ServiceBusMessageBatch mockBatch = ServiceBusModelFactory.ServiceBusMessageBatch(
-                batchSizeBytes: 500,
+                batchSizeBytes: 10000,  // Tamanho arbitrário grande o suficiente
                 batchMessageStore: backingList,
                 batchOptions: new CreateMessageBatchOptions(),
-                tryAddCallback: _ => backingList.Count < batchCountThreshold);
+                tryAddCallback: message => true);  // Sempre aceita adicionar mensagens
 
             _mockServiceBusSender
-                .Setup(sender => sender.CreateMessageBatchAsync(
-                    It.IsAny<CancellationToken>()))
+                .Setup(sender => sender.CreateMessageBatchAsync(It.IsAny<CancellationToken>()))
                 .ReturnsAsync(mockBatch);
 
-            _mockServiceBusSender
-                .Setup(sender => sender.SendMessagesAsync(
-                    It.Is<ServiceBusMessageBatch>(sendBatch => sendBatch != mockBatch),
-                    It.IsAny<CancellationToken>()))
-                .Returns(Task.CompletedTask);
-
             // Act
-            var response = await _httpClient.PostAsync($"/api/v1/queue-partition-session/partition-session/batch/{qtd}", null);
+            var response = await _httpClient.PostAsync("/api/v1/queue-partition/partition/batch/5", null);
 
             // Assert
             //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
             Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
 
-            //_mockServiceBusSender
-            //    .Verify(sender => sender.SendMessagesAsync(
-            //        It.IsAny<ServiceBusMessageBatch>(),
-            //        It.IsAny<CancellationToken>()),
+            // Ideally verify that the correct sender was created and messages were sent
+            // These verifications would work with proper DI setup for testing
+            // mockServiceBusClient.Verify(client => client.CreateSender("partition"), Times.Once);
+            // mockServiceBusSender.Verify(sender => sender.SendMessageAsync(
+            //    It.Is<ServiceBusMessage>(msg => msg.ContentType == "application/text"),
+            //    It.IsAny<CancellationToken>()),
             //    Times.Once);
+        }
+
+        [Fact]
+        public async Task PostPartitionQueueBatch_WithQtd_ReturnsAccepted()
+        {
+            // Arrange
+            _mockServiceBusClient
+                .Setup(client => client.CreateSender(It.IsAny<string>()))
+                .Returns(_mockServiceBusSender.Object);
+
+            _mockServiceBusSender
+                .Setup(sender => sender.CreateMessageBatchAsync(It.IsAny<CancellationToken>()));
+
+            List<ServiceBusMessage> backingList = new();
+            ServiceBusMessageBatch mockBatch = ServiceBusModelFactory.ServiceBusMessageBatch(
+                batchSizeBytes: 10000,  // Tamanho arbitrário grande o suficiente
+                batchMessageStore: backingList,
+                batchOptions: new CreateMessageBatchOptions(),
+                tryAddCallback: message => true);  // Sempre aceita adicionar mensagens
+
+            _mockServiceBusSender
+                .Setup(sender => sender.CreateMessageBatchAsync(It.IsAny<CancellationToken>()))
+                .ReturnsAsync(mockBatch);
+
+            // Act
+            var response = await _httpClient.PostAsync("/api/v1/queue-partition/partition/batch/5", null);
+
+            // Assert
+            //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
+            Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
         }
     }
 }

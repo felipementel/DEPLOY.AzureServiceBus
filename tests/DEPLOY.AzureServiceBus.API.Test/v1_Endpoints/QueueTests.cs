@@ -14,7 +14,7 @@ using System.Text.Json;
 using Xunit;
 using static DEPLOY.AzureServiceBus.API.Util.GenerateData;
 
-namespace DEPLOY.AzureServiceBus.API.Test
+namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
 {
     public class QueueEndpointTests : IClassFixture<WebApplicationFactory<Program>>
     {
@@ -40,7 +40,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
             {
                 builder.ConfigureServices(services =>
                 {
-                    services.AddScoped<IOptions<ParametersConfig>>(sp =>
+                    services.AddScoped(sp =>
                     {
                         return MockIOptions.Object;
                     });
