@@ -1,4 +1,4 @@
-﻿using Azure.Messaging.ServiceBus;
+using Azure.Messaging.ServiceBus;
 using DEPLOY.AzureServiceBus.API.Config;
 using DotNet.Testcontainers.Builders;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -70,7 +70,8 @@ namespace DEPLOY.AzureServiceBus.API.Test
         {
             await _serviceBusContainer.StartAsync();
 
-            var string2 = _serviceBusContainer.GetConnectionString();
+            //var string2 = _serviceBusContainer.GetConnectionString();
+            
             // Arrange
             _ServiceBusClient.CreateSender("simple-product");
 
