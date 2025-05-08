@@ -18,7 +18,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v2
                 .Build();
 
             var Topic_V2 = app
-                .MapGroup("/api/v{version:apiVersion}/topic")
+                .MapGroup("/api/v{version:apiVersion}/topics")
                 .WithApiVersionSet(apiVersionSetTopic_V2);
 
             Topic_V2

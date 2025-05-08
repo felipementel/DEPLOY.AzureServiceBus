@@ -14,7 +14,7 @@ using System.Text.Json;
 using Xunit;
 using static DEPLOY.AzureServiceBus.API.Util.GenerateData;
 
-namespace DEPLOY.AzureServiceBus.API.Test
+namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
 {
     public class QueueEndpointTests : IClassFixture<WebApplicationFactory<Program>>
     {
@@ -40,7 +40,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
             {
                 builder.ConfigureServices(services =>
                 {
-                    services.AddScoped<IOptions<ParametersConfig>>(sp =>
+                    services.AddScoped(sp =>
                     {
                         return MockIOptions.Object;
                     });
@@ -73,7 +73,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
                 .Returns(Task.CompletedTask);
 
             // Act
-            var response = await _httpClient.PostAsync("/api/v1/queue/simple", null);
+            var response = await _httpClient.PostAsync("/api/v1/queues/simple", null);
 
             // Assert
             Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
@@ -101,7 +101,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
             // Act
             var json = JsonSerializer.Serialize(testMessage);
             var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PostAsync("/api/v1/queue/simple-duplicate", content);
+            var response = await _httpClient.PostAsync("/api/v1/queues/simple-duplicate", content);
 
             // Assert
             Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
@@ -132,7 +132,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
                 .ReturnsAsync(1L); // Retorna um long que representa o ID da mensagem agendada
 
             // Act
-            var request = new HttpRequestMessage(HttpMethod.Post, "/api/v1/queue/simple-schedule");
+            var request = new HttpRequestMessage(HttpMethod.Post, "/api/v1/queues/simple-schedule");
             request.Headers.Add("scheduleInSecconds", scheduleInSeconds.ToString());
             var json = JsonSerializer.Serialize(testMessage);
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
@@ -179,7 +179,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
                 .Returns(Task.CompletedTask);
 
             // Act
-            var response = await _httpClient.PostAsync($"/api/v1/queue/simple/{qtd}", null);
+            var response = await _httpClient.PostAsync($"/api/v1/queues/simple/{qtd}", null);
 
             // Assert
             Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);

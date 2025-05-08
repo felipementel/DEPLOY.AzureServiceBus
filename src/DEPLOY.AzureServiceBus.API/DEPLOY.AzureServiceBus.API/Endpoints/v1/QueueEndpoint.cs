@@ -20,7 +20,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                 .Build();
 
             var Queue_V1 = app
-                .MapGroup("/api/v{version:apiVersion}/queue")
+                .MapGroup("/api/v{version:apiVersion}/queues")
                 .WithApiVersionSet(apiVersionSetQueue_V1);
 
             Queue_V1
