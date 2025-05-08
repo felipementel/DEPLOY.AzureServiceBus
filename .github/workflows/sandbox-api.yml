@@ -2,7 +2,7 @@ name: Sanbox Dispatch ⚡
 run-name: "${{ github.actor }} - ${{ github.run_id }}"
 
 on:
-  pull_request:
+  push:
     branches:
       - main
       - develop
