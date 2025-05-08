@@ -73,7 +73,7 @@ namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
                 .ReturnsAsync(mockBatch);
 
             // Act
-            var response = await _httpClient.PostAsync("/api/v1/queue-partition/partition/batch/5", null);
+            var response = await _httpClient.PostAsync("/api/v1/queues-partitions/partition/batch/5", null);
 
             // Assert
             //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
@@ -111,7 +111,7 @@ namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
                 .ReturnsAsync(mockBatch);
 
             // Act
-            var response = await _httpClient.PostAsync("/api/v1/queue-partition/partition/batch/5", null);
+            var response = await _httpClient.PostAsync("/api/v1/queues-partitions/partition/batch/5", null);
 
             // Assert
             //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);

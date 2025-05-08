@@ -60,7 +60,6 @@ namespace DEPLOY.AzureServiceBus.API.Test.v2_Endpoints
         public async Task MapTopicsCloudEventsEndpointsV2_ShouldReturnAccepted_WhenMessagesAreSent(int qtd)
         {
             // Arrange
-
             _mockServiceBusClient
                 .Setup(client => client.CreateSender(It.IsAny<string>()))
                 .Returns(_mockServiceBusSender.Object);
@@ -70,12 +69,11 @@ namespace DEPLOY.AzureServiceBus.API.Test.v2_Endpoints
                 .Returns(Task.CompletedTask);
 
             // Act
-            var response = await _httpClient.PostAsync($"/api/topic/v2/cloud-events/{qtd}", null);
+            var response = await _httpClient.PostAsync($"/api/v2/topics/cloud-events/{qtd}", null);
 
             // Assert
             //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
             Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
-            Assert.IsType<AcceptedResult>(response);
 
             _mockServiceBusClient.Verify(client => client.CreateSender("cloud-events"), Times.Once);
             _mockServiceBusSender.Verify(sender => sender.SendMessageAsync(It.IsAny<ServiceBusMessage>(), default), Times.Exactly(qtd));

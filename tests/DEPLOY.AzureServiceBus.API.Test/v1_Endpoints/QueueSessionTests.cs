@@ -70,7 +70,7 @@ namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
                 .Returns(Task.CompletedTask);
 
             // Act
-            var response = await _httpClient.PostAsync($"api/v1/queue-partition-session/partition-session/{qtd}", null);
+            var response = await _httpClient.PostAsync($"api/v1/queues-partitions-sessions/partition-session/{qtd}", null);
 
             // Assert
             //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
@@ -109,7 +109,7 @@ namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
                 .Returns(Task.CompletedTask);
 
             // Act
-            var response = await _httpClient.PostAsync($"/api/v1/queue-partition-session/partition-session/batch/{qtd}", null);
+            var response = await _httpClient.PostAsync($"/api/v1/queues-partitions-sessions/partition-session/batch/{qtd}", null);
 
             // Assert
             //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
