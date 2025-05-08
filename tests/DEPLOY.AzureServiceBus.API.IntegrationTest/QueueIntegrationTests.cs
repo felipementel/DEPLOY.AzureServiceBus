@@ -22,19 +22,22 @@ namespace DEPLOY.AzureServiceBus.API.Test
 
         public QueueIntegrationTests()
         {
+            var configFile = Path.Combine(Directory.GetCurrentDirectory(), "Config.json");
+
             _serviceBusContainer = new ServiceBusBuilder()
             //#if RUN_LOCAL
             //   .WithDockerEndpoint("tcp://localhost:2375")
             //#endif
               .WithImage("mcr.microsoft.com/azure-messaging/servicebus-emulator:latest")
               .WithAcceptLicenseAgreement(true)
-              .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5672))
+              //.WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(5672))
+              .WithBindMount(configFile, "/ServiceBus_Emulator/ConfigFiles/Config.json")
               .WithPortBinding(5672, 5672)
               .Build();
 
             ParametersConfig config = new ParametersConfig();
             config.AzureServiceBus = new Config.AzureServiceBus();
-            config.AzureServiceBus.ConnectionString = _serviceBusContainer.GetConnectionString();
+            config.AzureServiceBus.ConnectionString = "Endpoint=amqp://127.0.0.1:5672/;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true";
 
             Console.Write(config.AzureServiceBus.ConnectionString);
 
@@ -56,7 +59,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
 
                         });
                     });
-                });             
+                });
             });
 
             _httpClient = _factory.CreateClient();
@@ -67,6 +70,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
         {
             await _serviceBusContainer.StartAsync();
 
+            var string2 = _serviceBusContainer.GetConnectionString();
             // Arrange
             _ServiceBusClient.CreateSender("simple-product");
 
