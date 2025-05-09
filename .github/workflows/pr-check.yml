@@ -19,9 +19,9 @@ jobs:
       contents: read
       security-events: write
     with:
-      environment: 'DEV'
-      testsFolder: './tests'
-      msgCanalDeploy: 'PR Check - Canal DEPLOY'
+      environment: "DEV"
+      testsFolder: "./tests"
+      msgCanalDeploy: "PR Check - Canal DEPLOY ${{ github.sha }}"
       dotnetVersion: ${{ vars.DOTNETVERSION || '9.x' }}
       projectBaseDir: ${{ vars.PROJECTBASEDIR || './src' }}
       solutionFileName: ${{ vars.SOLUTIONFILENAME }}
