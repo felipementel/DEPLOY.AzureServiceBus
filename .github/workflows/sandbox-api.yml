@@ -70,6 +70,7 @@ jobs:
       sonarQube: ${{ inputs.sonarQube }}
       testsFolder: "./tests/"
       unitTests: ${{ inputs.unitTests }}
+      integrationTests: ${{ inputs.unitTests }}
       snyk: ${{ inputs.snyk }}
       msgCanalDeploy: ${{ inputs.msgCanalDeploy }}
       dotnetVersion: ${{ vars.DOTNETVERSION }}
