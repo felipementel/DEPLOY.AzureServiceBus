@@ -16,7 +16,7 @@ namespace DEPLOY.AzureServiceBus.API.Util
                 .ToList();
         }
 
-        
+
         public static List<string> Names(int quantity)
         {
             return Enumerable
@@ -56,7 +56,7 @@ namespace DEPLOY.AzureServiceBus.API.Util
             public required TVersion Version { get; set; }
             public required string MessageType { get; set; }
         }
-        
+
         public enum MessageType : byte
         {
             [JsonConverter(typeof(JsonStringEnumConverter))]

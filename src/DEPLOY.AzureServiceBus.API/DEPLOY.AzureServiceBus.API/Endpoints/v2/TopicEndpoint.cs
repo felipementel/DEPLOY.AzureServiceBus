@@ -1,6 +1,4 @@
-using Azure.Messaging;
 using Azure.Messaging.ServiceBus;
-using static DEPLOY.AzureServiceBus.API.Util.GenerateData;
 
 namespace DEPLOY.AzureServiceBus.API.Endpoints.v2
 {

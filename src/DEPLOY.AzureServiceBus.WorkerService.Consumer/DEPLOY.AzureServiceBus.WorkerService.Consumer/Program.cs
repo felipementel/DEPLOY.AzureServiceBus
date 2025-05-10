@@ -10,7 +10,7 @@ Console.Clear();
 
 // 1
 
-//builder.Services.AddHostedService<Worker_Product_001>();
+builder.Services.AddHostedService<Worker_Product_001>();
 //builder.Services.AddHostedService<Worker_Duplicate_002>();
 //builder.Services.AddHostedService<Worker_Schedule_003>();
 //builder.Services.AddHostedService<Worker_Simple_Qtd_004>();
@@ -23,7 +23,7 @@ Console.Clear();
 //builder.Services.AddHostedService<Worker_Processor_Partition>();
 
 //session
-builder.Services.AddHostedService<Worker_Processor_Partition_Session>();
+//builder.Services.AddHostedService<Worker_Processor_Partition_Session>();
 
 // Topic
 builder.Services.AddHostedService<WorkerCloudEvents>();

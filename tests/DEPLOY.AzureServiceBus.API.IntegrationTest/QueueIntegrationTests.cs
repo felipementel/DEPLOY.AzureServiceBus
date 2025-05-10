@@ -17,7 +17,7 @@ namespace DEPLOY.AzureServiceBus.API.Test
         private readonly WebApplicationFactory<Program> _factory;
         private readonly HttpClient _httpClient;
         private readonly ServiceBusClient _ServiceBusClient;
-        private readonly ServiceBusSender _ServiceBusSender;
+        //private readonly ServiceBusSender _ServiceBusSender;
         private readonly ServiceBusContainer _serviceBusContainer;
 
         public QueueIntegrationTests(WebApplicationFactory<Program> factory)

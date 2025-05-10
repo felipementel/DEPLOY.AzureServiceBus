@@ -4,12 +4,14 @@
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
 #Felipe Augusto [https://www.youtube.com/@D.E.P.L.O.Y]
-*
+
 /docker/data/*
 /docker/.env
-src/**/open-api/
+src/**/open-api/*
 .sonar*/*
 coveragereport/
+TestResults/
+
 
 # User-specific files
 *.rsuser
