@@ -4,23 +4,23 @@ using Microsoft.Extensions.Logging;
 
 namespace DEPLOY.AzureServiceBus.Function.Consumer.Queue
 {
-    public class ServiceBusQueueConsumer
+    public class DLQQueueSimpleDuplicateConsumer
     {
-        private readonly ILogger<ServiceBusQueueConsumer> _logger;
-        const string _queueName = "simple-product/$deadletterqueue";
+        private readonly ILogger<DLQQueueSimpleDuplicateConsumer> _logger;
+        const string _queueName = "simple-duplicate/$deadletterqueue";
 
-        public ServiceBusQueueConsumer(
-            ILogger<ServiceBusQueueConsumer> logger)
+        public DLQQueueSimpleDuplicateConsumer(
+            ILogger<DLQQueueSimpleDuplicateConsumer> logger)
         {
             _logger = logger;
         }
 
-        [Function(nameof(ServiceBusQueueConsumer))]
+        [Function(nameof(DLQQueueSimpleDuplicateConsumer))]
         public async Task Run(
             [ServiceBusTrigger(
             queueName: _queueName,
             AutoCompleteMessages = false,
-            Connection = "AzureServiceBus:Queue:Conn1",
+            Connection = "AzureServiceBus:Queue:ConnectionString",
             IsBatched = false,
             IsSessionsEnabled = false)]
             ServiceBusReceivedMessage message,
@@ -30,6 +30,10 @@ namespace DEPLOY.AzureServiceBus.Function.Consumer.Queue
             _logger.LogInformation("Message ID: {id}", message.MessageId);
             _logger.LogInformation("Message Body: {body}", message.Body);
             _logger.LogInformation("Message Content-Type: {contentType}", message.ContentType);
+            _logger.LogInformation("*** DLQ MESSAGE DETAIL ***");
+            _logger.LogInformation($"   DeadLetterSource: {message.DeadLetterSource}");
+            _logger.LogInformation($"   DeadLetterReason: {message.DeadLetterReason}");
+            _logger.LogInformation($"   DeadLetterErrorDescription: {message.DeadLetterErrorDescription}");
 
             // Complete the message
             await messageActions.CompleteMessageAsync(message);

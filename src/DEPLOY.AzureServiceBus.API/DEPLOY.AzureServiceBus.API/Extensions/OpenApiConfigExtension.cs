@@ -26,7 +26,7 @@ namespace DEPLOY.AzureServiceBus.API.Extensions
                 {
                     options.ReportApiVersions = true;
                     options.AssumeDefaultVersionWhenUnspecified = true;
-                    options.DefaultApiVersion = new ApiVersion(2, 0);
+                    options.DefaultApiVersion = new ApiVersion(1, 0);
                     options.ApiVersionReader = new UrlSegmentApiVersionReader();
                 })
                 .AddApiExplorer(
@@ -88,7 +88,7 @@ namespace DEPLOY.AzureServiceBus.API.Extensions
             //scalar
             app.MapScalarApiReference(options =>
             {
-                options.WithTitle("Canal DEPLOY - OpenAPISpec Tips");
+                options.WithTitle("Canal DEPLOY - Azure Service Bus");
                 options.WithTheme(ScalarTheme.BluePlanet);
                 options.WithSidebar(true);
                 options.WithTestRequestButton(true);

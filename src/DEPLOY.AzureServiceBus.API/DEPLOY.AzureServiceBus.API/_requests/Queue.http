@@ -1,5 +1,5 @@
 # @HostAddress = http://localhost:7007
 
-POST {{HostAddress}}/api/v1/queue/simple
+POST {{HostAddress}}/api/v1/queues/simple
 
 ###

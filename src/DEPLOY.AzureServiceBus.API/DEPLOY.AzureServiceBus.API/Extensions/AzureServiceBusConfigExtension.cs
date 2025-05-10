@@ -11,7 +11,7 @@ namespace DEPLOY.AzureServiceBus.API.Extensions
             services.AddScoped(_ =>
             {
                 var config = _.GetRequiredService<IOptions<ParametersConfig>>().Value;
-                return new ServiceBusClient(config.AzureServiceBus.ConnectionString, new ServiceBusClientOptions()
+                return new ServiceBusClient(config.AzureServiceBus!.ConnectionString, new ServiceBusClientOptions()
                 {
 
                 });

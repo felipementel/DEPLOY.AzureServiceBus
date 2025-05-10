@@ -7,7 +7,7 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
     public class WorkerCloudEvents : BackgroundService
     {
         private readonly string _topicName = "cloud-events";
-        private readonly string _subscribeName = "canal-deploy-mvp-esquenta-blumenau";
+        private readonly string _subscribeName = "cloud-events-subs-1";
         private readonly ILogger<WorkerCloudEvents> _logger;
         private readonly ServiceBusClient _serviceBusClient;
 
@@ -25,13 +25,13 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 
             while (!stoppingToken.IsCancellationRequested)
             {
-                //if (_logger.IsEnabled(LogLevel.Information))
-                //{
-                //    Console.WriteLine(Environment.NewLine);
-                //    _logger.LogInformation("Cloud Events at: {time}",
-                //        DateTimeOffset.Now);
-                //    Console.WriteLine(Environment.NewLine);
-                //}
+                if (_logger.IsEnabled(LogLevel.Information))
+                {
+                    Console.WriteLine(Environment.NewLine);
+                    _logger.LogInformation("Cloud Events at: {time}",
+                        DateTimeOffset.Now);
+                    Console.WriteLine(Environment.NewLine);
+                }
 
                 ServiceBusSessionProcessor processor = _serviceBusClient.CreateSessionProcessor(
                 _topicName,
@@ -40,7 +40,8 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
                 {
                     SessionIdleTimeout = TimeSpan.FromSeconds(30),
                     PrefetchCount = 1,
-                    AutoCompleteMessages = false
+                    AutoCompleteMessages = false,
+                    ReceiveMode = ServiceBusReceiveMode.PeekLock,
                 });
 
                 processor.ProcessMessageAsync += async args =>

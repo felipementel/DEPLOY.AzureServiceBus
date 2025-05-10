@@ -4,7 +4,7 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 {
     public class Worker_Simple_Qtd_004 : BackgroundService
     {
-        private readonly string _queueName = "simple";
+        private readonly string _queueName = "simple-product";
         private readonly ILogger<Worker_Simple_Qtd_004> _logger;
         private readonly ServiceBusClient _serviceBusClient;
 

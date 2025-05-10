@@ -4,23 +4,23 @@ using Microsoft.Extensions.Logging;
 
 namespace DEPLOY.AzureServiceBus.Function.Consumer.Queue
 {
-    public class ServiceBusQueueBatchConsumer
+    public class DLQQueuePartitionConsumer
     {
-        private readonly ILogger<ServiceBusQueueBatchConsumer> _logger;
-        const string _queueName = "simple-batch/$deadletterqueue";
+        private readonly ILogger<DLQQueuePartitionConsumer> _logger;
+        const string _queueName = "partition/$deadletterqueue";
 
-        public ServiceBusQueueBatchConsumer(
-            ILogger<ServiceBusQueueBatchConsumer> logger)
+        public DLQQueuePartitionConsumer(
+            ILogger<DLQQueuePartitionConsumer> logger)
         {
             _logger = logger;
         }
 
-        [Function(nameof(ServiceBusQueueBatchConsumer))]
+        [Function(nameof(DLQQueuePartitionConsumer))]
         public async Task Run(
             [ServiceBusTrigger(
             queueName: _queueName,
             AutoCompleteMessages = false,
-            Connection = "AzureServiceBus:Queue:Conn1",
+            Connection = "AzureServiceBus:Queue:ConnectionString",
             IsBatched = true,
             IsSessionsEnabled = false)]
             ServiceBusReceivedMessage[] messages,
@@ -32,6 +32,10 @@ namespace DEPLOY.AzureServiceBus.Function.Consumer.Queue
                 _logger.LogInformation("Message ID: {id}", message.MessageId);
                 _logger.LogInformation("Message Body: {body}", message.Body);
                 _logger.LogInformation("Message Content-Type: {contentType}", message.ContentType);
+                _logger.LogInformation("*** DLQ MESSAGE DETAIL ***");
+                _logger.LogInformation($"   DeadLetterSource: {message.DeadLetterSource}");
+                _logger.LogInformation($"   DeadLetterReason: {message.DeadLetterReason}");
+                _logger.LogInformation($"   DeadLetterErrorDescription: {message.DeadLetterErrorDescription}");
 
                 await messageActions.CompleteMessageAsync(message);
             }

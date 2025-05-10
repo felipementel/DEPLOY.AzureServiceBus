@@ -1,7 +1,5 @@
 using Azure.Messaging.ServiceBus;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Azure.Amqp.Framing;
-using System.Text.Unicode;
 
 namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
 {
@@ -169,7 +167,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                 if (messageBatch.Count > 0)
                 {
                     await serviceBusSender.SendMessagesAsync(messageBatch);
-                }                
+                }
             }
             catch (ServiceBusException ex)
             {
