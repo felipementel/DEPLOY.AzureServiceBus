@@ -120,7 +120,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                     List<ServiceBusMessage> messages = new();
                     for (int i = 0; i < qtd; i++)
                     {
-                        messages.Add(new ServiceBusMessage(BinaryData.FromString($"Canal DEPLOY | MVPConf Blumenau {i}"))
+                        messages.Add(new ServiceBusMessage(BinaryData.FromString($"Canal DEPLOY | Global Azure Floripa {i}"))
                         {
                             MessageId = Guid.NewGuid().ToString(),
                             ContentType = "application/text",
