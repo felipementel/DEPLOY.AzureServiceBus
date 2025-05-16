@@ -42,7 +42,7 @@ on:
         default: true
       tests:
         type: boolean
-        description: 'Run Unit Tests'
+        description: 'Run Unit & Integration Tests'
         required: false
         default: true
       snyk:
