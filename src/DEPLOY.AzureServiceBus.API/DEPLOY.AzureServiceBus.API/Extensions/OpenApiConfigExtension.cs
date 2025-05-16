@@ -33,7 +33,6 @@ namespace DEPLOY.AzureServiceBus.API.Extensions
                 options =>
                 {
                     options.GroupNameFormat = "'v'VVV";
-
                     options.SubstituteApiVersionInUrl = true;
                 })
                 .EnableApiVersionBinding();
@@ -88,7 +87,7 @@ namespace DEPLOY.AzureServiceBus.API.Extensions
             //scalar
             app.MapScalarApiReference(options =>
             {
-                options.WithTitle("Canal DEPLOY - Azure Service Bus");
+                options.WithTitle("Canal DEPLOY - Azure Service Bus !  ! ");
                 options.WithTheme(ScalarTheme.BluePlanet);
                 options.WithSidebar(true);
                 options.WithTestRequestButton(true);
