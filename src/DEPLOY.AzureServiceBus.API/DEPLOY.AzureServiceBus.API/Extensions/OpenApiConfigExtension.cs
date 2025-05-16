@@ -33,7 +33,6 @@ namespace DEPLOY.AzureServiceBus.API.Extensions
                 options =>
                 {
                     options.GroupNameFormat = "'v'VVV";
-
                     options.SubstituteApiVersionInUrl = true;
                 })
                 .EnableApiVersionBinding();
