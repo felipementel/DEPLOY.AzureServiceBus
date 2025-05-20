@@ -15,7 +15,7 @@ Console.Clear();
 //builder.Services.AddHostedService<Worker_Schedule_003>();
 //builder.Services.AddHostedService<Worker_Simple_Qtd_004>();
 //builder.Services.AddHostedService<Worker_Batch_Normal_005>();
-builder.Services.AddHostedService<Worker_Batch_Processor_006>();
+//builder.Services.AddHostedService<Worker_Batch_Processor_006>(); //
 
 //builder.Services.AddHostedService<WorkerDLQ>();
 
