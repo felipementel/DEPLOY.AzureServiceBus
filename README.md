@@ -2,6 +2,14 @@
 
 ![banner](./docs/banner.png)
 
+# Vídeos no Youtube
+[![Youtube](https://img.shields.io/badge/Youtube-DEPLOY%20Azure%20Service%20Bus-red?style=for-the-badge&logo=youtube)](https://www.youtube.com/watch?v=7Roz4nFIwTs&list=PLf7uDG4xdAJ0Tp6zTkmdInDisrvRqiYLC&ab_channel=DEPLOY)
+
+
+> [!IMPORTANT]
+> 2025.05.20
+
+
 # Introdução
 O projeto **DEPLOY.AzureServiceBus** é uma solução de exemplo que demonstra como usar o Azure Service Bus para comunicação entre serviços. O projeto inclui exemplos de produção e consumo de mensagens usando filas e tópicos do Azure Service Bus.
 
