@@ -23,6 +23,7 @@ O projeto **DEPLOY.AzureServiceBus** é uma solução de exemplo que demonstra c
 - **docker/**: Arquivos para execução local com Docker
 - **docs/**: Documentação e imagens
 
+````
 ├── .github
     ├── CODEOWNERS
     ├── dependabot.yml
@@ -145,7 +146,7 @@ O projeto **DEPLOY.AzureServiceBus** é uma solução de exemplo que demonstra c
             └── QueueTests.cs
         └── v2_Endpoints
             └── TopicCloudEventsEndpointTest.cs
-
+````
 # Como executar
 
 Execute os projetos individualmente:
