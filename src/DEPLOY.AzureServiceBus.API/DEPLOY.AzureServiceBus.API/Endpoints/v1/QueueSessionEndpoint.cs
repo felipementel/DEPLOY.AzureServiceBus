@@ -49,7 +49,6 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                                 ContentType = "application/json",
                                 PartitionKey = "IMPAR",
                                 SessionId = "IMPAR",
-
                             }, cancellationToken);
                     }
 
@@ -76,14 +75,14 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                 CancellationToken cancellationToken) =>
                 {
                     ServiceBusSender sender = serviceBusClient.CreateSender(partition_session);
-                    List<ServiceBusMessage> messagesPAR = new();
-                    List<ServiceBusMessage> messagesIMPAR = new();
+                    List<ServiceBusMessage> messagesMaior100 = new();
+                    List<ServiceBusMessage> messagesMenor100 = new();
                     List<Product> products = Util.GenerateData.Products(qtd);
 
                     products.ForEach(product =>
                     {
                         if (product.Price > 99.9M)
-                            messagesPAR.Add(new ServiceBusMessage()
+                            messagesMaior100.Add(new ServiceBusMessage()
                             {
                                 Body = BinaryData.FromObjectAsJson(product),
                                 ContentType = "application/json",
@@ -91,7 +90,7 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                                 SessionId = "MAIOR 100"
                             });
                         else
-                            messagesPAR.Add(new ServiceBusMessage()
+                            messagesMenor100.Add(new ServiceBusMessage()
                             {
                                 Body = BinaryData.FromObjectAsJson(product),
                                 ContentType = "application/json",
@@ -100,8 +99,8 @@ namespace DEPLOY.AzureServiceBus.API.Endpoints.v1
                             });
                     });
 
-                    await SendBatchSessionAsync(sender, messagesPAR);
-                    await SendBatchSessionAsync(sender, messagesIMPAR);
+                    await SendBatchSessionAsync(sender, messagesMaior100);
+                    await SendBatchSessionAsync(sender, messagesMenor100);
 
                     return Results.Accepted();
                 })

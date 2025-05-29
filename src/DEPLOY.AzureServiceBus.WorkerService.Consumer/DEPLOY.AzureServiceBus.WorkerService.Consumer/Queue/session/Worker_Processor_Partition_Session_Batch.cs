@@ -2,14 +2,14 @@ using Azure.Messaging.ServiceBus;
 
 namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
 {
-    public class Worker_Processor_Partition_Session : BackgroundService
+    public class Worker_Processor_Partition_Session_Batch : BackgroundService
     {
         private readonly string _queueName = "partition-session";
-        private readonly ILogger<Worker_Processor_Partition_Session> _logger;
+        private readonly ILogger<Worker_Processor_Partition_Session_Batch> _logger;
         private readonly ServiceBusClient _serviceBusClient;
 
-        public Worker_Processor_Partition_Session(
-            ILogger<Worker_Processor_Partition_Session> logger,
+        public Worker_Processor_Partition_Session_Batch(
+            ILogger<Worker_Processor_Partition_Session_Batch> logger,
             ServiceBusClient serviceBusClient)
         {
             _logger = logger;
@@ -32,7 +32,7 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
                 {
                     AutoCompleteMessages = false,
                     ReceiveMode = ServiceBusReceiveMode.PeekLock,
-                    SessionIds = { "PAR", "IMPAR" },
+                    SessionIds = { "MAIOR 100", "MENOR 100" },
                     MaxConcurrentSessions = 1,
                     SessionIdleTimeout = TimeSpan.FromSeconds(15)
                 });

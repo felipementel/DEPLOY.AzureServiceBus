@@ -38,6 +38,7 @@ namespace DEPLOY.AzureServiceBus.WorkerService.Consumer
                 _subscribeName,
                 new ServiceBusSessionProcessorOptions
                 {
+                    //SessionIds = { "PAR", "IMPAR" },
                     SessionIdleTimeout = TimeSpan.FromSeconds(30),
                     PrefetchCount = 1,
                     AutoCompleteMessages = false,

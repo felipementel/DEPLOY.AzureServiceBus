@@ -6,10 +6,12 @@ var builder = Host.CreateApplicationBuilder(args);
 builder.Services.AddAzureServiceBusConfig();
 builder.Services.AddOptionConfig();
 
-Console.Clear();
+if (Console.IsOutputRedirected == false)
+{
+    Console.Clear();
+}
 
 // 1
-
 //builder.Services.AddHostedService<Worker_Product_001>();
 //builder.Services.AddHostedService<Worker_Duplicate_002>();
 //builder.Services.AddHostedService<Worker_Schedule_003>();
@@ -24,7 +26,7 @@ Console.Clear();
 
 //session
 //builder.Services.AddHostedService<Worker_Processor_Partition_Session>();
-
+//builder.Services.AddHostedService<Worker_Processor_Partition_Session_Batch>();
 // Topic
 builder.Services.AddHostedService<WorkerCloudEvents>();
 builder.Services.AddHostedService<WorkerCloudEvents2>();

@@ -37,7 +37,6 @@ namespace DEPLOY.AzureServiceBus.Function.Consumer.Queue
                 _logger.LogInformation($"   DeadLetterReason: {message.DeadLetterReason}");
                 _logger.LogInformation($"   DeadLetterErrorDescription: {message.DeadLetterErrorDescription}");
 
-
                 await messageActions.CompleteMessageAsync(message);
             }
         }
