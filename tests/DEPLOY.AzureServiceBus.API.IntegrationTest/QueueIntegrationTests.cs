@@ -1,6 +1,7 @@
 using Azure.Messaging.ServiceBus;
 using DEPLOY.AzureServiceBus.API.Config;
 using DotNet.Testcontainers.Builders;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -59,6 +60,8 @@ namespace DEPLOY.AzureServiceBus.API.Test
                         });
                     });
                 });
+
+                builder.UseEnvironment("Development");
             });
 
             _httpClient = _factory.CreateClient();

@@ -1,6 +1,5 @@
 using Azure.Messaging.ServiceBus;
 using DEPLOY.AzureServiceBus.API.Config;
-using DEPLOY.AzureServiceBus.API.Util;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -8,11 +7,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 using Moq;
 using System.Net;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using Xunit;
-using static DEPLOY.AzureServiceBus.API.Util.GenerateData;
 
 namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
 {
@@ -107,8 +104,8 @@ namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
             Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
             _mockServiceBusClient.Verify(client => client.CreateSender("simple-duplicate"), Times.Once);
             _mockServiceBusSender.Verify(sender => sender.SendMessageAsync(
-                It.Is<ServiceBusMessage>(msg => 
-                    msg.ContentType == "application/json" && 
+                It.Is<ServiceBusMessage>(msg =>
+                    msg.ContentType == "application/json" &&
                     msg.MessageId == testMessage.Length.ToString()),
                 It.IsAny<CancellationToken>()), Times.Once);
         }
@@ -136,15 +133,15 @@ namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
             request.Headers.Add("scheduleInSecconds", scheduleInSeconds.ToString());
             var json = JsonSerializer.Serialize(testMessage);
             request.Content = new StringContent(json, Encoding.UTF8, "application/json");
-            
+
             var response = await _httpClient.SendAsync(request);
 
             // Assert
             Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
             _mockServiceBusClient.Verify(client => client.CreateSender("simple-schedule"), Times.Once);
             _mockServiceBusSender.Verify(sender => sender.ScheduleMessageAsync(
-                It.Is<ServiceBusMessage>(msg => 
-                    msg.ContentType == "application/json" && 
+                It.Is<ServiceBusMessage>(msg =>
+                    msg.ContentType == "application/json" &&
                     msg.Body.ToString() == testMessage),
                 It.IsAny<DateTimeOffset>(),
                 It.IsAny<CancellationToken>()), Times.Once);
@@ -239,7 +236,7 @@ namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
             };
 
             int messageCount = 0;
-            
+
             // Configuração para simular que apenas a primeira mensagem cabe no primeiro lote
             List<ServiceBusMessage> backingList1 = new();
             ServiceBusMessageBatch mockBatch1 = ServiceBusModelFactory.ServiceBusMessageBatch(
@@ -310,7 +307,7 @@ namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
 
             // Act - Não deve lançar exceção para o chamador
             await Endpoints.v1.QueueEndpoint.SendBatchAsync(_mockServiceBusSender.Object, messages);
-            
+
             // Restaura a saída do console
             Console.SetOut(originalConsoleOut);
 
@@ -319,7 +316,7 @@ namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
             _mockServiceBusSender.Verify(sender => sender.SendMessagesAsync(
                 It.IsAny<ServiceBusMessageBatch>(),
                 It.IsAny<CancellationToken>()), Times.Once);
-            
+
             // Verifica se a mensagem de erro foi registrada no console
             Assert.Contains("Error ServiceBusException sending batch:", consoleOutput.ToString());
         }

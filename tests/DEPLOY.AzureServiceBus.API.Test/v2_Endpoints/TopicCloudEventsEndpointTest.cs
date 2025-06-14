@@ -1,7 +1,6 @@
 using Azure.Messaging.ServiceBus;
 using DEPLOY.AzureServiceBus.API.Config;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
