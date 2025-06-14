@@ -1,0 +1,24 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.5.2.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEPLOY.AzureServiceBus.API.Test", "DEPLOY.AzureServiceBus.API.Test.csproj", "{2D1FA2DE-1805-9D8A-D310-2139869C952A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2D1FA2DE-1805-9D8A-D310-2139869C952A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2D1FA2DE-1805-9D8A-D310-2139869C952A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2D1FA2DE-1805-9D8A-D310-2139869C952A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2D1FA2DE-1805-9D8A-D310-2139869C952A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1BF7A184-5020-45C1-9C13-4398F461C51B}
+	EndGlobalSection
+EndGlobal

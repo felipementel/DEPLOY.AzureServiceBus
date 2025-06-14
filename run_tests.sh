@@ -3,6 +3,9 @@
 # =============================
 # Configurações
 # =============================
+#
+#   chmod +x run_tests.sh
+#
 testsFolder="${1:-tests}"
 reportTitle="${2:-Cobertura de Testes}"
 sonarExclusions="${3:- }"
@@ -31,7 +34,7 @@ fi
 # =============================
 index=0
 for proj in "${projects[@]}"; do
-    echo "➡️ Rodando testes com cobertura para: $proj"
+    echo -e "${YELLOW}➡️ Rodando testes com cobertura para: $proj"
     dotnet test "$proj" \
         --verbosity minimal \
         --configuration Debug \
@@ -44,12 +47,19 @@ done
 # =============================
 echo -e "${YELLOW}➡️ Gerando relatório HTML e Cobertura...${NC}"
 
-reportgenerator \
-    -reports:"**/TestResults/**/coverage.cobertura.xml" \
-    -targetdir:"coveragereport" \
-    -reportTypes:"Cobertura;Html;MarkdownSummaryGithub;SonarQube" \
-    -title:"$reportTitle" \
-    -classfilters:"$sonarExclusions" \
-    -tag:"${runNumber}_${runId}"
+reportCmd=(
+    reportgenerator \
+        -reports:"**/TestResults/**/coverage.cobertura.xml" \
+        -targetdir:"coveragereport" \
+        -reportTypes:"Cobertura;Html;MarkdownSummaryGithub;SonarQube" \
+        -title:"$reportTitle" \
+        -tag:"${runNumber}_${runId}"
+)
+
+if [[ -n "${sonarExclusions// }" ]]; then
+    reportCmd+=( -classfilters:"$sonarExclusions" )
+fi
+
+"${reportCmd[@]}"
 
 echo -e "\n✅ Processo concluído. Relatórios gerados em: coveragereport"
