@@ -76,16 +76,11 @@ namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
             var response = await _httpClient.PostAsync("/api/v1/queues-partitions/partition/batch/5", null);
 
             // Assert
-            //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
             Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
 
-            // Ideally verify that the correct sender was created and messages were sent
-            // These verifications would work with proper DI setup for testing
-            // mockServiceBusClient.Verify(client => client.CreateSender("partition"), Times.Once);
-            // mockServiceBusSender.Verify(sender => sender.SendMessageAsync(
-            //    It.Is<ServiceBusMessage>(msg => msg.ContentType == "application/text"),
-            //    It.IsAny<CancellationToken>()),
-            //    Times.Once);
+            _mockServiceBusClient.Verify(client => client.CreateSender("partition"), Times.Once);
+            _mockServiceBusSender.Verify(sender => sender.CreateMessageBatchAsync(default),
+               Times.Exactly(2));
         }
 
         [Fact]
@@ -114,7 +109,6 @@ namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
             var response = await _httpClient.PostAsync("/api/v1/queues-partitions/partition/batch/5", null);
 
             // Assert
-            //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
             Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
         }
     }

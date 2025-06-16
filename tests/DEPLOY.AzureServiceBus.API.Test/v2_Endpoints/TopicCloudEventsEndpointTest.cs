@@ -71,7 +71,6 @@ namespace DEPLOY.AzureServiceBus.API.Test.v2_Endpoints
             var response = await _httpClient.PostAsync($"/api/v2/topics/cloud-events/{qtd}", null);
 
             // Assert
-            //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
             Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
 
             _mockServiceBusClient.Verify(client => client.CreateSender("cloud-events"), Times.Once);

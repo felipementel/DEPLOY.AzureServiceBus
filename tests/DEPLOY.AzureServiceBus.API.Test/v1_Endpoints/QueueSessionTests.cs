@@ -73,7 +73,6 @@ namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
             var response = await _httpClient.PostAsync($"api/v1/queues-partitions-sessions/partition-session/{qtd}", null);
 
             // Assert
-            //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
             Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
         }
 
@@ -112,14 +111,7 @@ namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
             var response = await _httpClient.PostAsync($"/api/v1/queues-partitions-sessions/partition-session/batch/{qtd}", null);
 
             // Assert
-            //Assert.Equal(StatusCodes.Status202Accepted, (int)response.StatusCode);
             Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
-
-            //_mockServiceBusSender
-            //    .Verify(sender => sender.SendMessagesAsync(
-            //        It.IsAny<ServiceBusMessageBatch>(),
-            //        It.IsAny<CancellationToken>()),
-            //    Times.Once);
         }
     }
 }
