@@ -2,14 +2,14 @@
   "UserConfig": {
     "Namespaces": [
       {
-        "Name": "sbemulatorns",
+        "Name": "CanalDEPLOY-ServiceBus-Emulator",
         "Queues": [
           {
             "Name": "simple-product",
             "Properties": {
-              "DeadLetteringOnMessageExpiration": false,
-              "DefaultMessageTimeToLive": "PT1H",
-              "DuplicateDetectionHistoryTimeWindow": "PT20S",
+              "DeadLetteringOnMessageExpiration": true,
+              "DefaultMessageTimeToLive": "PT5M",
+              "DuplicateDetectionHistoryTimeWindow": "PT10M",
               "ForwardDeadLetteredMessagesTo": "",
               "ForwardTo": "",
               "LockDuration": "PT1M",

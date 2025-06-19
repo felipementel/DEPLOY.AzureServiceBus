@@ -25,6 +25,7 @@ namespace DEPLOY.AzureServiceBus.API.Test.v1_Endpoints
             config.AzureServiceBus.ConnectionString = "Endpoint=sb://127.0.0.1;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;";
 
             var MockIOptions = new Mock<IOptions<ParametersConfig>>();
+
             MockIOptions.Setup(x => x.Value).Returns(config);
 
             _mockServiceBusClient = new Mock<ServiceBusClient>();
