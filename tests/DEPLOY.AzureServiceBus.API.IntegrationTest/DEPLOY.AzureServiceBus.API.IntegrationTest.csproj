@@ -17,7 +17,7 @@
 
 	<ItemGroup>
 		<Content Include="Config.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
 		</Content>
 	</ItemGroup>
 

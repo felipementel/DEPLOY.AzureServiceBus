@@ -79,6 +79,8 @@ namespace DEPLOY.AzureServiceBus.API.Test
 
             // Assert
             Assert.Equal(HttpStatusCode.Accepted, response.StatusCode);
+
+            await _serviceBusContainer.StopAsync();
         }
     }
 }

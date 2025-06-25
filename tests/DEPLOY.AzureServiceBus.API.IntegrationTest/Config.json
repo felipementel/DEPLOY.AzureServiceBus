@@ -2,14 +2,14 @@
   "UserConfig": {
     "Namespaces": [
       {
-        "Name": "CanalDEPLOY-ServiceBus-Emulator",
+        "Name": "sbemulatorns",
         "Queues": [
           {
             "Name": "simple-product",
             "Properties": {
               "DeadLetteringOnMessageExpiration": true,
-              "DefaultMessageTimeToLive": "PT5M",
-              "DuplicateDetectionHistoryTimeWindow": "PT10M",
+              "DefaultMessageTimeToLive": "PT1H",
+              "DuplicateDetectionHistoryTimeWindow": "PT20S",
               "ForwardDeadLetteredMessagesTo": "",
               "ForwardTo": "",
               "LockDuration": "PT1M",
@@ -27,13 +27,12 @@
               "ForwardDeadLetteredMessagesTo": "",
               "ForwardTo": "",
               "LockDuration": "PT1M",
-              "MaxDeliveryCount": 3,
+              "MaxDeliveryCount": 10,
               "RequiresDuplicateDetection": false,
               "RequiresSession": false
             }
           }
         ],
-
         "Topics": [
           {
             "Name": "cloud-events",
@@ -49,7 +48,7 @@
                   "DeadLetteringOnMessageExpiration": false,
                   "DefaultMessageTimeToLive": "PT1H",
                   "LockDuration": "PT1M",
-                  "MaxDeliveryCount": 3,
+                  "MaxDeliveryCount": 10,
                   "ForwardDeadLetteredMessagesTo": "",
                   "ForwardTo": "",
                   "RequiresSession": false
@@ -60,15 +59,14 @@
                     "Properties": {
                       "FilterType": "Correlation",
                       "CorrelationFilter": {
-                        "ContentType": "application/json"
-                        // Other supported properties
-                        // "CorrelationId": "id1",
-                        // "Label": "subject1",
-                        // "MessageId": "msgid1",
-                        // "ReplyTo": "someQueue",
-                        // "ReplyToSessionId": "sessionId",
-                        // "SessionId": "session1",
-                        // "To": "xyz"
+                        "ContentType": "application/text",
+                        "CorrelationId": "id1",
+                        "Label": "subject1",
+                        "MessageId": "msgid1",
+                        "ReplyTo": "someQueue",
+                        "ReplyToSessionId": "sessionId",
+                        "SessionId": "session1",
+                        "To": "xyz"
                       }
                     }
                   }
@@ -80,7 +78,7 @@
                   "DeadLetteringOnMessageExpiration": false,
                   "DefaultMessageTimeToLive": "PT1H",
                   "LockDuration": "PT1M",
-                  "MaxDeliveryCount": 3,
+                  "MaxDeliveryCount": 10,
                   "ForwardDeadLetteredMessagesTo": "",
                   "ForwardTo": "",
                   "RequiresSession": false
@@ -92,7 +90,7 @@
                       "FilterType": "Correlation",
                       "CorrelationFilter": {
                         "Properties": {
-                          "prop1": "value1"
+                          "prop3": "value3"
                         }
                       }
                     }
@@ -105,37 +103,11 @@
                   "DeadLetteringOnMessageExpiration": false,
                   "DefaultMessageTimeToLive": "PT1H",
                   "LockDuration": "PT1M",
-                  "MaxDeliveryCount": 3,
+                  "MaxDeliveryCount": 10,
                   "ForwardDeadLetteredMessagesTo": "",
                   "ForwardTo": "",
                   "RequiresSession": false
                 }
-              },
-              {
-                "Name": "subscription.4",
-                "Properties": {
-                  "DeadLetteringOnMessageExpiration": false,
-                  "DefaultMessageTimeToLive": "PT1H",
-                  "LockDuration": "PT1M",
-                  "MaxDeliveryCount": 3,
-                  "ForwardDeadLetteredMessagesTo": "",
-                  "ForwardTo": "",
-                  "RequiresSession": false
-                },
-                "Rules": [
-                  {
-                    "Name": "sql-filter-1",
-                    "Properties": {
-                      "FilterType": "Sql",
-                      "SqlFilter": {
-                        "SqlExpression": "sys.MessageId = '123456' AND userProp1 = 'value1'"
-                      },
-                      "Action" : {
-                        "SqlExpression": "SET sys.To = 'Entity'"
-                      }
-                    }
-                  }
-                ]
               }
             ]
           }
