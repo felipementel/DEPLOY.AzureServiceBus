@@ -2,29 +2,50 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
+<<<<<<< HEAD
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEPLOY.AzureServiceBus.API.IntegrationTest", "DEPLOY.AzureServiceBus.API.IntegrationTest\DEPLOY.AzureServiceBus.API.IntegrationTest.csproj", "{C57BC517-E36C-CF8C-777D-0C1169DAEBA3}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEPLOY.AzureServiceBus.API.Test", "DEPLOY.AzureServiceBus.API.Test\DEPLOY.AzureServiceBus.API.Test.csproj", "{D8B7DBBA-E6FE-450A-A728-A2945037B8DA}"
 EndProject
+=======
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEPLOY.AzureServiceBus.API.Test", "DEPLOY.AzureServiceBus.API.Test\DEPLOY.AzureServiceBus.API.Test.csproj", "{D8B7DBBA-E6FE-450A-A728-A2945037B8DA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DEPLOY.AzureServiceBus.API.IntegrationTest", "DEPLOY.AzureServiceBus.API.IntegrationTest\DEPLOY.AzureServiceBus.API.IntegrationTest.csproj", "{C57BC517-E36C-CF8C-777D-0C1169DAEBA3}"
+EndProject
+>>>>>>> 51db531 (feat: corrigindo o teste de integracao)
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+<<<<<<< HEAD
 		{C57BC517-E36C-CF8C-777D-0C1169DAEBA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C57BC517-E36C-CF8C-777D-0C1169DAEBA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C57BC517-E36C-CF8C-777D-0C1169DAEBA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{C57BC517-E36C-CF8C-777D-0C1169DAEBA3}.Release|Any CPU.Build.0 = Release|Any CPU
+=======
+>>>>>>> 51db531 (feat: corrigindo o teste de integracao)
 		{D8B7DBBA-E6FE-450A-A728-A2945037B8DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D8B7DBBA-E6FE-450A-A728-A2945037B8DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8B7DBBA-E6FE-450A-A728-A2945037B8DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D8B7DBBA-E6FE-450A-A728-A2945037B8DA}.Release|Any CPU.Build.0 = Release|Any CPU
+<<<<<<< HEAD
+=======
+		{C57BC517-E36C-CF8C-777D-0C1169DAEBA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C57BC517-E36C-CF8C-777D-0C1169DAEBA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C57BC517-E36C-CF8C-777D-0C1169DAEBA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C57BC517-E36C-CF8C-777D-0C1169DAEBA3}.Release|Any CPU.Build.0 = Release|Any CPU
+>>>>>>> 51db531 (feat: corrigindo o teste de integracao)
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
+<<<<<<< HEAD
 		SolutionGuid = {0289E4FC-1EFF-4BF1-BE2B-430642984A07}
+=======
+		SolutionGuid = {E4C662D4-F101-4793-A05C-017BCFBA67D7}
+>>>>>>> 51db531 (feat: corrigindo o teste de integracao)
 	EndGlobalSection
 EndGlobal
