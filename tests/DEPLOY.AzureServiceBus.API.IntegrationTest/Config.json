@@ -2,7 +2,7 @@
   "UserConfig": {
     "Namespaces": [
       {
-        "Name": "CanalDEPLOY-ServiceBus-Emulator",
+        "Name": "sbemulatorns",
         "Queues": [
           {
             "Name": "simple-product",
