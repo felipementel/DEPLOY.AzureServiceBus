@@ -6,7 +6,7 @@
 version: 2
 updates:
   - package-ecosystem: "nuget"
-    directory: "/src"
+    directory: "/src/DEPLOY.AzureServiceBus.API"
     schedule:
       interval: "weekly"
       day: "sunday"
@@ -19,8 +19,40 @@ updates:
     labels:
       - "dependabot"
     commit-message:
-      prefix: "[nuget] "
+      prefix: "[nuget api] "
 
+  - package-ecosystem: "nuget"
+    directory: "/src/DEPLOY.AzureServiceBus.Function.Consumer"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "00:00"
+      timezone: "America/Sao_Paulo"
+    reviewers:
+      - "felipementel"
+    assignees:
+      - "felipementel"
+    labels:
+      - "dependabot"
+    commit-message:
+      prefix: "[nuget function] "
+
+  - package-ecosystem: "nuget"
+    directory: "/src/DEPLOY.AzureServiceBus.WorkerService.Consumer"
+    schedule:
+      interval: "weekly"
+      day: "sunday"
+      time: "00:00"
+      timezone: "America/Sao_Paulo"
+    reviewers:
+      - "felipementel"
+    assignees:
+      - "felipementel"
+    labels:
+      - "dependabot"
+    commit-message:
+      prefix: "[nuget worker service] "
+      
   - package-ecosystem: "docker"
     directory: "/docker"
     registries:
