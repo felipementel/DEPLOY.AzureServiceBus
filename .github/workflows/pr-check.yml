@@ -12,6 +12,8 @@ on:
       - 'docs/**'
       - 'src/**/_requests/**'
 
+  workflow_dispatch:
+
 jobs:
   call-pr-check-workflow:
     name: Call PR Check Reusable Workflow
