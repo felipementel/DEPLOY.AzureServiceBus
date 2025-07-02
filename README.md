@@ -7,7 +7,9 @@
 
 
 > [!IMPORTANT]
-> 2025.05.20
+> GitHub TAG utilizada no vídeo do YouTube
+> 
+> 2025.05.19
 
 
 # Introdução
