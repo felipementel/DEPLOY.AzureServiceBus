@@ -1,4 +1,4 @@
-name: Sanbox Dispatch ⚡
+name: Sandbox Dispatch ⚡
 run-name: "${{ github.actor }} - ${{ github.run_id }}"
 
 on:
