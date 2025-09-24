@@ -25,8 +25,8 @@ updates:
     directory: "/src/DEPLOY.AzureServiceBus.Function.Consumer"
     schedule:
       interval: "weekly"
-      day: "sunday"
-      time: "01:00"
+      day: "friday"
+      time: "04:00"
       timezone: "America/Sao_Paulo"
     reviewers:
       - "felipementel"
@@ -41,7 +41,7 @@ updates:
     directory: "/src/DEPLOY.AzureServiceBus.WorkerService.Consumer"
     schedule:
       interval: "weekly"
-      day: "sunday"
+      day: "fryday"
       time: "01:00"
       timezone: "America/Sao_Paulo"
     reviewers:
@@ -52,12 +52,12 @@ updates:
       - "dependabot"
     commit-message:
       prefix: "[nuget worker service] "
-      
+
   - package-ecosystem: "docker"
     directory: "/docker"
     schedule:
       interval: "weekly"
-      day: "sunday"
+      day: "wednesday"
       time: "01:00"
       timezone: "America/Sao_Paulo"
     reviewers:
@@ -73,7 +73,7 @@ updates:
     directory: "/.github/workflows"
     schedule:
       interval: "weekly"
-      day: "sunday"
+      day: "tuesday"
       time: "02:00"
       timezone: "America/Sao_Paulo"
     reviewers:
