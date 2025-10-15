@@ -7,6 +7,7 @@ version: 2
 updates:
   - package-ecosystem: "nuget"
     directory: "/src/DEPLOY.AzureServiceBus.API"
+    target-branch: "main"
     schedule:
       interval: "weekly"
       day: "sunday"
@@ -23,6 +24,7 @@ updates:
 
   - package-ecosystem: "nuget"
     directory: "/src/DEPLOY.AzureServiceBus.Function.Consumer"
+    target-branch: "main"
     schedule:
       interval: "weekly"
       day: "friday"
@@ -39,6 +41,7 @@ updates:
 
   - package-ecosystem: "nuget"
     directory: "/src/DEPLOY.AzureServiceBus.WorkerService.Consumer"
+    target-branch: "main"
     schedule:
       interval: "weekly"
       day: "fryday"
@@ -71,6 +74,7 @@ updates:
 
   - package-ecosystem: "github-actions"
     directory: "/.github/workflows"
+    target-branch: "main"
     schedule:
       interval: "weekly"
       day: "tuesday"
