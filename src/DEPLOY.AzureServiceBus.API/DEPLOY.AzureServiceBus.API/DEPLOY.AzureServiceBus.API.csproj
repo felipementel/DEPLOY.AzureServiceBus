@@ -15,7 +15,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Azure.Identity" Version="1.14.2" />
+		<PackageReference Include="Azure.Identity" Version="1.17.1" />
 		<PackageReference Include="Azure.Messaging.ServiceBus" Version="7.20.1" />
 		<PackageReference Include="Bogus" Version="35.6.3" />
 		<PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.7" />
